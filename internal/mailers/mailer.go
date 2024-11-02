@@ -1,24 +1,28 @@
 package mailers
 
 import (
+	"crypto/tls"
+	"fmt"
 	"log"
-	"net/smtp"
 	"os"
+	"strconv"
+
+	"gopkg.in/gomail.v2"
 )
 
 type Mailer interface {
 	// send email
-	SendEmail(from string, to []string, msg string) bool
+	SendEmail(from string, to []string, subject string, msg string)
 }
 
 type mailer struct {
-	auth *smtp.Auth
+	dialer *gomail.Dialer
 }
 
 var (
 	smtpHost       = os.Getenv("SMTP_HOST")
 	smtpPort       = os.Getenv("SMTP_PORT")
-	username       = os.Getenv("SMTP_USERNAME")
+	user           = os.Getenv("SMTP_USER")
 	password       = os.Getenv("SMTP_PASSWORD")
 	mailerInstance *mailer
 )
@@ -29,22 +33,30 @@ func New() Mailer {
 		return mailerInstance
 	}
 
-	// Auth setup
-	auth := smtp.PlainAuth("", username, password, smtpHost)
+	port, err := strconv.Atoi(smtpPort)
+	if err != nil {
+		log.Fatal("PORT must be an interger")
+	}
+	// configure mailer connection
+	dialer := gomail.NewDialer(smtpHost, port, user, password)
+
+	dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	mailerInstance = &mailer{
-		auth: &auth,
+		dialer,
 	}
 	return mailerInstance
 }
 
-func (m *mailer) SendEmail(from string, to []string, msg string) bool {
-	// @TODO implement to send a email
-	err := smtp.SendMail(smtpHost+":"+smtpPort, *m.auth, from, to, []byte(msg))
+func (m *mailer) SendEmail(from string, to []string, subject string, body string) {
+	newMessage := gomail.NewMessage()
+	newMessage.SetHeader("From", from)
+	newMessage.SetHeader("To", to...)
+	newMessage.SetHeader("Subject", subject)
+	newMessage.SetBody("text/html", body)
 
-	if err != nil {
-		log.Fatalln("Error sending email")
-		return false
+	if err := (*m).dialer.DialAndSend(newMessage); err != nil {
+		// log.Fatal(err)
+		fmt.Println(err)
 	}
-	return true
 }
