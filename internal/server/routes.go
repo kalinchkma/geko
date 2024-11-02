@@ -7,17 +7,21 @@ import (
 )
 
 func (s *Server) RegisterRoutes() http.Handler {
-	r := gin.Default()
+	router := gin.Default()
 
-	r.GET("/", s.Helloworld)
+	// API router group
+	api := router.Group("/api")
 
-	return r
-}
+	// auth api
+	auth := api.Group("/auth")
+	{
+		auth.POST("/register", s.Register)
+	}
 
-func (s *Server) Helloworld(c *gin.Context) {
-	response := make(map[string]string)
+	// view route
+	router.GET("/", func(ctx *gin.Context) {
+		ctx.SecureJSON(http.StatusOK, map[string]string{"message": "Default view routes"})
+	})
 
-	response["message"] = "Hello world"
-
-	c.JSON(http.StatusOK, response)
+	return router
 }
