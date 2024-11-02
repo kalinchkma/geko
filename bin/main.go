@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/kalinchkma/ganja/m/internal/server"
+	"ganja/internal/server"
 )
 
 func main() {

@@ -1,4 +1,4 @@
-module github.com/kalinchkma/ganja/m
+module ganja
 
 go 1.23.2
 
