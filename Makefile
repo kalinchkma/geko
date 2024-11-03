@@ -7,11 +7,11 @@ build:
 	@echo "Building..."
 	
 	
-	@go build -o main cmd/main.go
+	@go build -o main bin/main.go
 
 # Run the application
 run:
-	@go run cmd/main.go
+	@go run bin/main.go
 # Create DB container
 docker-run:
 	@if docker compose up --build 2>/dev/null; then \
@@ -37,7 +37,7 @@ test:
 # Integrations Tests for the application
 itest:
 	@echo "Running integration tests..."
-	@go test ./internal/database -v
+	@go test ./app/database -v
 
 # Clean the binary
 clean:

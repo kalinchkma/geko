@@ -9,8 +9,8 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 
-	"ganja/internal/database"
-	"ganja/internal/mailers"
+	"ganja/app/database"
+	"ganja/app/mailers"
 )
 
 type Server struct {

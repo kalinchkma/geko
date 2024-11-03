@@ -9,7 +9,7 @@ import (
 	"syscall"
 	"time"
 
-	"ganja/internal/server"
+	"ganja/app/server"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {

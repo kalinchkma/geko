@@ -2,7 +2,7 @@ package auth
 
 import (
 	"fmt"
-	"ganja/internal/mailers"
+	"ganja/app/mailers"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

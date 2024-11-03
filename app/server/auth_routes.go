@@ -1,7 +1,7 @@
 package server
 
 import (
-	"ganja/internal/handlers/auth"
+	"ganja/app/handlers/auth"
 
 	"github.com/gin-gonic/gin"
 )
