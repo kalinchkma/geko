@@ -9,22 +9,18 @@ import (
 
 	_ "github.com/joho/godotenv/autoload"
 
-	"ganja/app/database"
-	"ganja/app/mailers"
+	config "ganja/app/interfaces"
 )
 
 type Server struct {
-	port   int
-	mailer mailers.Mailer
-	db     database.Service
+	port int
+	cfg  *config.Config
 }
 
 func NewServer() *http.Server {
 	port, _ := strconv.Atoi(os.Getenv("PORT"))
 	NewServer := &Server{
-		port:   port,
-		mailer: mailers.New(),
-		db:     database.New(),
+		port: port,
 	}
 
 	// Declare Server config

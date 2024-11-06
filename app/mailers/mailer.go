@@ -3,17 +3,13 @@ package mailers
 import (
 	"crypto/tls"
 	"fmt"
+	config "ganja/app/interfaces"
 	"log"
 	"os"
 	"strconv"
 
 	"gopkg.in/gomail.v2"
 )
-
-type Mailer interface {
-	// send email
-	SendEmail(from string, to []string, subject string, msg string)
-}
 
 type mailer struct {
 	dialer *gomail.Dialer
@@ -27,7 +23,7 @@ var (
 	mailerInstance *mailer
 )
 
-func New() Mailer {
+func New() config.Mailer {
 	// Reuse mailer connection
 	if mailerInstance != nil {
 		return mailerInstance

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	config "ganja/app/interfaces"
 	"log"
 	"os"
 	"strconv"
@@ -14,15 +15,15 @@ import (
 )
 
 // Service represents a service that interacts with a database.
-type Service interface {
-	// Health returns a map of health status information.
-	// The keys and values in the map are service-specific.
-	Health() map[string]string
+// type Service interface {
+// 	// Health returns a map of health status information.
+// 	// The keys and values in the map are service-specific.
+// 	Health() map[string]string
 
-	// Close terminates the database connection.
-	// It returns an error if the connection cannot be closed.
-	Close() error
-}
+// 	// Close terminates the database connection.
+// 	// It returns an error if the connection cannot be closed.
+// 	Close() error
+// }
 
 type service struct {
 	db *sql.DB
@@ -38,7 +39,7 @@ var (
 	dbInstance *service
 )
 
-func New() Service {
+func New() config.Database {
 	// Reuse Connection
 	if dbInstance != nil {
 		return dbInstance
