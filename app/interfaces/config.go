@@ -1,6 +1,6 @@
 package config
 
 type Config struct {
-	DB     *Database
-	Mainer *Mailer
+	DB     Database
+	Mailer Mailer
 }

@@ -7,6 +7,5 @@ import (
 )
 
 func (s *Server) Register(ctx *gin.Context) {
-
-	auth.Register(&s.mailer, ctx)
+	auth.Register(s.cfg, ctx)
 }
