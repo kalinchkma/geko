@@ -1,4 +1,4 @@
-package config
+package interfaces
 
 type Config struct {
 	DB     Database

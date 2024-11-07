@@ -4,7 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	config "ganja/app/interfaces"
+	"ganja/internal/interfaces"
+
 	"log"
 	"os"
 	"strconv"
@@ -28,7 +29,7 @@ var (
 	dbInstance *service
 )
 
-func New() config.Database {
+func New() interfaces.Database {
 	// Reuse Connection
 	if dbInstance != nil {
 		return dbInstance

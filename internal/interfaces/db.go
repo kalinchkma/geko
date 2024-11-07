@@ -1,4 +1,4 @@
-package config
+package interfaces
 
 type Database interface {
 	// Health returns a map of health status information.

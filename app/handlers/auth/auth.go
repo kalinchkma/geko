@@ -2,7 +2,8 @@ package auth
 
 import (
 	"fmt"
-	config "ganja/app/interfaces"
+	"ganja/internal/interfaces"
+
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,7 +15,7 @@ type User struct {
 	Password int    `json:"password" binding:"required"`
 }
 
-func Register(cfg *config.Config, ctx *gin.Context) {
+func Register(cfg *interfaces.Config, ctx *gin.Context) {
 	var registerBody User
 
 	if err := ctx.BindJSON(&registerBody); err != nil {

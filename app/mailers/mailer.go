@@ -3,7 +3,8 @@ package mailers
 import (
 	"crypto/tls"
 	"fmt"
-	config "ganja/app/interfaces"
+	"ganja/internal/interfaces"
+
 	"log"
 	"os"
 	"strconv"
@@ -23,7 +24,7 @@ var (
 	mailerInstance *mailer
 )
 
-func New() config.Mailer {
+func New() interfaces.Mailer {
 	// Reuse mailer connection
 	if mailerInstance != nil {
 		return mailerInstance

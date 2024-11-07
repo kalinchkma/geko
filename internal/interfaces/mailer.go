@@ -1,4 +1,4 @@
-package config
+package interfaces
 
 type Mailer interface {
 	// send email
