@@ -1,6 +1,6 @@
 package interfaces
 
-type Config struct {
+type AppContext struct {
 	DB     Database
 	Mailer Mailer
 }
