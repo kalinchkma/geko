@@ -1,6 +1,6 @@
 # Project ganja
 
-Wrapper for golang reuseable library to easy way to make server native application with golang
+Wrapper for creating golang server native application using popular library 
 
 ## Getting Started
 
