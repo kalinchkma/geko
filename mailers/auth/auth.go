@@ -1,6 +1,6 @@
 package mailers
 
-import "ganja/internal/interfaces"
+import "ganja/interfaces"
 
 type AuthMailer struct{}
 

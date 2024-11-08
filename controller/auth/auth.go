@@ -2,7 +2,7 @@ package auth
 
 import (
 	"fmt"
-	"ganja/internal/interfaces"
+	"ganja/interfaces"
 
 	"net/http"
 

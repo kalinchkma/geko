@@ -3,13 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"ganja/server"
 	"log"
 	"net/http"
 	"os/signal"
 	"syscall"
 	"time"
-
-	"ganja/app/server"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"ganja/internal/interfaces"
+	"ganja/interfaces"
 
 	"log"
 	"os"

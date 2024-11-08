@@ -2,17 +2,15 @@ package server
 
 import (
 	"fmt"
+	"ganja/database"
+	"ganja/interfaces"
+	"ganja/mailers"
 	"net/http"
 	"os"
 	"strconv"
 	"time"
 
-	"ganja/app/database"
-	"ganja/internal/interfaces"
-
 	_ "github.com/joho/godotenv/autoload"
-
-	"ganja/app/mailers"
 )
 
 type Server struct {

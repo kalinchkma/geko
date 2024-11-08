@@ -3,7 +3,7 @@ package mailers
 import (
 	"crypto/tls"
 	"fmt"
-	"ganja/internal/interfaces"
+	"ganja/interfaces"
 
 	"log"
 	"os"
