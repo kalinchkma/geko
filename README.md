@@ -2,6 +2,13 @@
 
 Wrapper for creating golang server native application using popular library 
 
+## Package used
+1. [Gin](https://gin-gonic.com/docs/): For http request handling
+2. [Gomail](https://pkg.go.dev/gopkg.in/gomail.v2): For mailer
+3. [Gorm](https://gorm.io/docs/): For ORM
+
+
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
