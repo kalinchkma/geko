@@ -17,5 +17,8 @@ func (s *Server) RegisterRegistry() http.Handler {
 	// register user routes
 	routes.RegisterUserRoutes(s.actx, router)
 
+	// register server check routes
+	routes.RegisterCheckerRoutes(s.actx, router)
+
 	return router
 }

@@ -2,7 +2,8 @@ package server
 
 import (
 	"fmt"
-	database "ganja/initializers"
+
+	"ganja/initializers/database"
 	"ganja/interfaces"
 	"ganja/mailers"
 	"net/http"
