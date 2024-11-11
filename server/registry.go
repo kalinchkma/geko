@@ -10,7 +10,7 @@ import (
 
 // Register all your route group here
 func (s *Server) routesRegistry() http.Handler {
-	router := gin.Default()
+	router := gin.New()
 
 	// register auth routes
 	routes.RegisterAuthRoutes(s.actx, router)
