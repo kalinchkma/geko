@@ -27,7 +27,7 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 		return
 	}
 
-	go (*actx).Mailer.SendEmail("no-replay@gmail.com", []string{registerBody.Email}, "Welcome to Battech", "Hello, good to see you here")
+	go (*actx).Mailer.SendEmail("no-replay@demomailtrap.com", []string{registerBody.Email}, "Welcome to Battech", "Hello, good to see you here")
 
 	ctx.SecureJSON(http.StatusOK, gin.H{"message": "user register routes"})
 }

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"ganja/models"
 	"ganja/routes"
 	"net/http"
 
@@ -8,7 +9,7 @@ import (
 )
 
 // Register all your route group here
-func (s *Server) RegisterRegistry() http.Handler {
+func (s *Server) routesRegistry() http.Handler {
 	router := gin.Default()
 
 	// register auth routes
@@ -21,4 +22,13 @@ func (s *Server) RegisterRegistry() http.Handler {
 	routes.RegisterCheckerRoutes(s.actx, router)
 
 	return router
+}
+
+// load adition dependency services
+func (s *Server) bootstrap() {
+	// register models
+	db := s.actx.DB.GetDB()
+
+	// auto migrate user model
+	db.AutoMigrate(&models.User{})
 }

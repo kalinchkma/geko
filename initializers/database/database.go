@@ -18,7 +18,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type service struct {
+type Database struct {
 	db      *gorm.DB
 	connStr *string
 }
@@ -30,7 +30,7 @@ var (
 	port       = os.Getenv("DB_PORT")
 	host       = os.Getenv("DB_HOST")
 	schema     = os.Getenv("DB_SCHEMA")
-	dbInstance *service
+	dbInstance *Database
 )
 
 func New() interfaces.Database {
@@ -47,7 +47,7 @@ func New() interfaces.Database {
 		log.Fatal(err)
 	}
 
-	dbInstance = &service{
+	dbInstance = &Database{
 		db:      db,
 		connStr: &connStr,
 	}
@@ -56,7 +56,7 @@ func New() interfaces.Database {
 
 // Health checks the health of the database connection by pinging the database.
 // It returns a map with keys indicating various health statistics.
-func (s *service) Health() map[string]string {
+func (s *Database) Health() map[string]string {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 
@@ -120,11 +120,15 @@ func (s *service) Health() map[string]string {
 // It logs a message indicating the disconnection from the specific database.
 // If the connection is successfully closed, it returns nil.
 // If an error occurs while closing the connection, it returns the error.
-func (s *service) Close() error {
+func (s *Database) Close() error {
 	log.Printf("Disconnected from database: %s", database)
 	sqlDB, err := s.db.DB() // Retrieve the SQL database instance to close the connection
 	if err != nil {
 		return fmt.Errorf("failed to get underlying SQL DB: %v", err)
 	}
 	return sqlDB.Close()
+}
+
+func (s *Database) GetDB() *gorm.DB {
+	return s.db
 }

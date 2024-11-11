@@ -29,10 +29,13 @@ func NewServer() *http.Server {
 		},
 	}
 
+	// load dependency services
+	NewServer.bootstrap()
+
 	// Declare Server config
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", NewServer.port),
-		Handler:      NewServer.RegisterRegistry(),
+		Handler:      NewServer.routesRegistry(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
