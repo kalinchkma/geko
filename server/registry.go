@@ -13,8 +13,8 @@ func (s *Server) routesRegistry() http.Handler {
 	router := gin.New()
 
 	// pointing to the frontend
-	// router.StaticFile("/", "views/dist/index.html")
-	router.StaticFS("/frontend", http.Dir("views/dist"))
+	router.StaticFile("/", "views/dist/index.html")
+	router.StaticFS("/static", http.Dir("views/dist/static"))
 
 	// register auth routes
 	routes.RegisterAuthRoutes(s.actx, router)
