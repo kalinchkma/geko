@@ -5,5 +5,9 @@ export default defineConfig({
   plugins: [pluginReact()],
   html: {
     title: "Welcome to ganja"
+  },
+  dev: {
+    writeToDisk: true
   }
+
 });
