@@ -7,5 +7,5 @@ import (
 )
 
 func VerifyOtp(actx *interfaces.AppContext, ctx *gin.Context) {
-
+	// @TODO complete verify otp logic
 }

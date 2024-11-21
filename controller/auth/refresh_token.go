@@ -7,5 +7,5 @@ import (
 )
 
 func RefreshToken(actx *interfaces.AppContext, ctx *gin.Context) {
-
+	// @TODO complete refresh token logic
 }
