@@ -20,11 +20,19 @@ func RegisterAuthRoutes(actx *interfaces.AppContext, rootRouter *gin.Engine) {
 		authController.Register(actx, ctx)
 	})
 
-	router.POST("/send-otp", func(ctx *gin.Context) {
+	router.POST("/verify-otp", func(ctx *gin.Context) {
 
 	})
 
-	router.POST("/verify-otp", func(ctx *gin.Context) {
+	router.POST("/resend-otp", func(ctx *gin.Context) {
+
+	})
+
+	router.POST("/forgot-password", func(ctx *gin.Context) {
+
+	})
+
+	router.POST("/refresh-token", func(ctx *gin.Context) {
 
 	})
 }
