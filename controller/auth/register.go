@@ -1,9 +1,7 @@
 package authController
 
 import (
-	"fmt"
 	"ganja/interfaces"
-	"strings"
 
 	"net/http"
 
@@ -23,13 +21,16 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 	// validate requesting inputs
 	if err := ctx.ShouldBindJSON(&registerBody.Name); err != nil {
 		// fmt.Printf("%#v \n%#v", err.Error(), strings.Split(err.Error(), "\n"))
-		fmt.Println(err.Error())
-		for _, filedError := range strings.Split(err.Error(), "\n") {
-			fmt.Println(filedError)
-		}
+		// fmt.Println(err.Error())
+		// for _, filedError := range strings.Split(err.Error(), "\n") {
+		// 	fmt.Println(filedError)
+		// }
+		ctx.JSON(400, gin.H{
+			"error": err.Error(),
+		})
 	}
 
-	// go (*actx).Mailer.SendEmail("no-replay@demomailtrap.com", []string{registerBody.Email}, "Welcome to Battech", "Hello, good to see you here")
+	go (*actx).Mailer.SendEmail("no-replay@demomailtrap.com", []string{registerBody.Email}, "Welcome to Battech", "Hello, good to see you here")
 
 	ctx.SecureJSON(http.StatusOK, gin.H{"message": "user register routes"})
 }
