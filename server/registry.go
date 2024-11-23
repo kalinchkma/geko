@@ -1,7 +1,6 @@
 package server
 
 import (
-	"ganja/models"
 	"ganja/routes"
 	"net/http"
 
@@ -30,9 +29,5 @@ func (s *Server) routesRegistry() http.Handler {
 
 // load adition dependency services
 func (s *Server) bootstrap() {
-	// register models
-	db := s.actx.DB.GetDB()
 
-	// auto migrate user model
-	db.AutoMigrate(&models.User{})
 }

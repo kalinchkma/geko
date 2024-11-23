@@ -11,7 +11,16 @@ build:
 
 # Run the application
 run:
-	@go run bin/main.go
+	@go run bin/main.go server
+
+# Run datatabase up migration
+run-migrate-up:
+	@go run bin/main.go migrate:up
+
+# Run database down migration
+run-migrate-down:
+	@go run bin/main.go migrate:down
+
 # Create DB container
 docker-run:
 	@if docker compose up --build 2>/dev/null; then \
