@@ -29,6 +29,17 @@ Run the application
 ```bash
 make run
 ```
+
+Run the database up migration
+```bash
+make run-migration-up
+```
+
+Run the database down migration
+```bash
+make run-migration-down
+```
+
 Create DB container
 ```bash
 make docker-run
