@@ -11,5 +11,5 @@ func Up_user(db *gorm.DB) error {
 }
 
 func Down_user(db *gorm.DB) error {
-	return db.Migrator().DropTable("users")
+	return db.Migrator().DropTable(&models.User{})
 }

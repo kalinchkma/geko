@@ -11,5 +11,5 @@ func Up_guild(db *gorm.DB) error {
 }
 
 func Down_guild(db *gorm.DB) error {
-	return db.Migrator().DropTable("guilds")
+	return db.Migrator().DropTable(&models.Guild{})
 }
