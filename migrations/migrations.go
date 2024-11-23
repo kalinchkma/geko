@@ -14,6 +14,12 @@ type Migration struct {
 	Applied bool
 }
 
+type MigrationTable struct {
+	gorm.Model
+	ID   string `gorm:"primaryKey"`
+	Name string
+}
+
 // Migration list
 // Here you will add models to migrate
 var migrations = []Migration{
@@ -31,7 +37,18 @@ var migrations = []Migration{
 
 type MigrationLog struct {
 	ID        string `gorm:"primaryKey"`
+	TrackIdS  []int
 	AppliedAt time.Time
+}
+
+// Create model on database
+func Up(db *gorm.DB, m *gorm.Model) error {
+	return db.AutoMigrate(m)
+}
+
+// Drop model from database
+func Down(db *gorm.DB, m *gorm.Model) error {
+	return db.Migrator().DropTable(m)
 }
 
 // Migrate applies all pending migration
