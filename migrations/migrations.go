@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
@@ -13,17 +12,6 @@ type MigrationTable struct {
 	gorm.Model
 	Name         string `gorm:"unique"`
 	SchemaFields string `gorm:"type:json"`
-}
-
-type MigrationTracker struct {
-	gorm.Model
-	MigrationID string `gorm:"uniqueIndex"`
-}
-
-type MigrationsLog struct {
-	gorm.Model
-	SchemaFields string `gorm:"type:json"`
-	MigrationID  string `gorm:"index"`
 }
 
 // Parse metadata from given model
@@ -56,17 +44,6 @@ func CheckMigrateMigrationTable(db *gorm.DB) error {
 	if err := db.Migrator().AutoMigrate(&MigrationTable{}); err != nil {
 		return fmt.Errorf("error migrating %T: %w", &MigrationTable{}, err)
 	}
-
-	// Migrate `MigrationTracker` return error if not success
-	if err := db.Migrator().AutoMigrate(&MigrationTracker{}); err != nil {
-		return fmt.Errorf("error migrating %T: %w", &MigrationTracker{}, err)
-	}
-
-	// Migrate `MigrationsLog` return error if not success
-	if err := db.Migrator().AutoMigrate(&MigrationsLog{}); err != nil {
-		return fmt.Errorf("error migating %T: %w", &MigrationsLog{}, err)
-	}
-
 	// return nil if everything is ok
 	return nil
 }
@@ -87,8 +64,6 @@ func Migrate(db *gorm.DB) error {
 		if err != nil {
 			return fmt.Errorf("error migrating %T: %w", model, err)
 		}
-		// record migration if migration happaned
-		migrationId := uuid.New().String()
 
 		// Check if the table exists
 		if !db.Migrator().HasTable(model) {
@@ -100,10 +75,6 @@ func Migrate(db *gorm.DB) error {
 
 			// Record the migration to migration table
 			db.Create(&MigrationTable{Name: modelName, SchemaFields: modelSchemaField})
-			// Record migration track
-			db.Create(&MigrationTracker{MigrationID: migrationId})
-			// Record last migration
-			db.Create(&MigrationsLog{SchemaFields: modelSchemaField, MigrationID: migrationId})
 			fmt.Printf("Successfully created table for model %T\n", model)
 
 		} else {
