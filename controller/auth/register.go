@@ -29,17 +29,18 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 		})
 		return
 	}
+	// @TODO Check if user already exist
 
-	// create new user
+	// Create new user
 	user := models.User{
 		Name:     requestBody.Name,
 		Email:    requestBody.Email,
 		Password: requestBody.Password,
 	}
 
-	// save the new user
+	// Save the new user
 	res := actx.DB.DB.Create(&user)
-
+	// Handle the error of user
 	if res.Error != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Internal server error",
@@ -47,11 +48,12 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 		return
 	}
 
+	// Send the active account otp
 	go func() {
 		otp := library.GenerateOTP(4)
 		fmt.Println("otp", otp)
 		(*actx).Mailer.SendEmail("no-replay@demomailtrap.com", []string{user.Email}, "Welcome to Battech", fmt.Sprintf("Your OTP: <p> %v </p>", otp))
 	}()
-
+	// Return success
 	ctx.SecureJSON(http.StatusOK, gin.H{"message": "User registered successfully!"})
 }
