@@ -1,132 +1,161 @@
 package migrations
 
 import (
+	"encoding/json"
 	"fmt"
-	"ganja/models"
-	"time"
 
+	"github.com/google/uuid"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 )
 
-type Migration struct {
-	ID      string
-	Up      func(*gorm.DB) error
-	Down    func(*gorm.DB) error
-	Applied bool
-}
-
-// This model holds the model registry for migration
 type MigrationTable struct {
 	gorm.Model
-	ID      string `gorm:"primaryKey"`
-	Name    string
-	Applied bool
+	Name         string `gorm:"unique"`
+	SchemaFields string `gorm:"type:json"`
 }
 
-// Migration list
-// Here you will add models to migrate
-var migrations = []Migration{
-	{
-		ID:   "user_",
-		Up:   Up_user,
-		Down: Down_user,
-	},
-	{
-		ID:   "guild_",
-		Up:   Up_guild,
-		Down: Down_guild,
-	},
+type MigrationTracker struct {
+	gorm.Model
+	MigrationID string `gorm:"uniqueIndex"`
 }
 
-// List of model to migrate
-var modelList = map[string]interface{}{
-	"users":  &models.User{},
-	"guilds": &models.Guild{},
+type MigrationsLog struct {
+	gorm.Model
+	SchemaFields string `gorm:"type:json"`
+	MigrationID  string `gorm:"index"`
 }
 
-// This Model for tracking the migration
-type MigrationLog struct {
-	ID        string `gorm:"primaryKey"`
-	TrackIdS  []string
-	AppliedAt time.Time
+// Parse metadata from given model
+func GetMetaData(db *gorm.DB, model interface{}) (string, string, *schema.Schema, error) {
+	// Prepare statements
+	stmt := &gorm.Statement{DB: db}
+
+	// Parse model schema
+	if err := stmt.Parse(model); err != nil {
+		return "", "", nil, fmt.Errorf("error parsing model: %w", err)
+	}
+
+	// Serialize model fields
+	var fields []string
+	for _, field := range stmt.Schema.Fields {
+		fields = append(fields, field.DBName)
+	}
+
+	// Convert model fields to string
+	if fieldsString, err := json.Marshal(fields); err != nil {
+		return "", "", nil, fmt.Errorf("error: %w", err)
+	} else {
+		return string(fieldsString), stmt.Schema.Table, stmt.Schema, nil
+	}
 }
 
-// Create model on database
-func Up(db *gorm.DB, m *gorm.Model) error {
-	return db.AutoMigrate(m)
+// check migration and migrate, migration table
+func CheckMigrateMigrationTable(db *gorm.DB) error {
+	// Migrate `MigrationTable` return error if not success
+	if err := db.Migrator().AutoMigrate(&MigrationTable{}); err != nil {
+		return fmt.Errorf("error migrating %T: %w", &MigrationTable{}, err)
+	}
+
+	// Migrate `MigrationTracker` return error if not success
+	if err := db.Migrator().AutoMigrate(&MigrationTracker{}); err != nil {
+		return fmt.Errorf("error migrating %T: %w", &MigrationTracker{}, err)
+	}
+
+	// Migrate `MigrationsLog` return error if not success
+	if err := db.Migrator().AutoMigrate(&MigrationsLog{}); err != nil {
+		return fmt.Errorf("error migating %T: %w", &MigrationsLog{}, err)
+	}
+
+	// return nil if everything is ok
+	return nil
 }
 
-// Drop model from database
-func Down(db *gorm.DB, m *gorm.Model) error {
-	return db.Migrator().DropTable(m)
-}
-
-// Migrate applies all pending migration
+// Migrate applies all pending migrations
 func Migrate(db *gorm.DB) error {
-	db.AutoMigrate(&MigrationTable{})
-	db.AutoMigrate(&MigrationLog{})
+	// Check migration table is ready if not throw an error
+	if err := CheckMigrateMigrationTable(db); err != nil {
+		return err
+	}
 
-	// var appliedMigrations []MigrationLog
-	// db.Find(&appliedMigrations)
+	fmt.Println("Starting migration process...")
 
-	// appliedIDs := map[string]bool{}
+	// Loop through each model in modelLists and apply migrations
+	for _, model := range modelLists {
+		// Parse metadata from model
+		modelSchemaField, modelName, modelSchema, err := GetMetaData(db, model)
+		if err != nil {
+			return fmt.Errorf("error migrating %T: %w", model, err)
+		}
+		// record migration if migration happaned
+		migrationId := uuid.New().String()
 
-	// for _, m := range appliedMigrations {
-	// 	appliedIDs[m.ID] = true
-	// }
+		// Check if the table exists
+		if !db.Migrator().HasTable(model) {
+			// Table doesn't exist, creating the table
+			fmt.Printf("Table for model %T does not exist. Creating table...\n", model)
+			if err := db.Migrator().CreateTable(model); err != nil {
+				return fmt.Errorf("failed to create table for model %T: %w", model, err)
+			}
 
-	// for _, m := range migrations {
-	// 	if !appliedIDs[m.ID] {
-	// 		fmt.Printf("Applying migrationL: %s\n", m.ID)
-	// 		if err := m.Up(db); err != nil {
-	// 			return fmt.Errorf("failed to apply migration %s: %w", m.ID, err)
-	// 		}
-	// 		db.Create(&MigrationLog{ID: m.ID, AppliedAt: time.Now()})
-	// 	}
-	// }
+			// Record the migration to migration table
+			db.Create(&MigrationTable{Name: modelName, SchemaFields: modelSchemaField})
+			// Record migration track
+			db.Create(&MigrationTracker{MigrationID: migrationId})
+			// Record last migration
+			db.Create(&MigrationsLog{SchemaFields: modelSchemaField, MigrationID: migrationId})
+			fmt.Printf("Successfully created table for model %T\n", model)
+
+		} else {
+
+			// If Table Already exist check field changes
+			// get previous schema fields
+			// if schema field are not same then migrate again
+			var m MigrationTable
+			db.Where("name = ?", modelName).First(&m)
+			var oldFiedls []string
+			if err := json.Unmarshal([]byte(m.SchemaFields), &oldFiedls); err != nil {
+				return fmt.Errorf("error migrating %T: %w", model, err)
+			}
+			fiedlsMap := make(map[string]struct{})
+			for _, item := range modelSchema.Fields {
+				fiedlsMap[item.DBName] = struct{}{}
+			}
+			fmt.Printf("Table for model %T already exists. Running migration...\n", model)
+			// Auto migrate the model
+			db.AutoMigrate(model)
+
+			// Remove auto unused field
+			for _, field := range oldFiedls {
+				// check new field exist of not in current db schema
+				if _, found := fiedlsMap[field]; !found {
+					// not exist delete the column
+					db.Migrator().DropColumn(model, field)
+				}
+			}
+
+			db.Model(&MigrationTable{}).Where("name = ?", modelName).Update("SchemaFields", modelSchemaField)
+		}
+	}
+
+	fmt.Println("Migration process completed successfully.")
 	return nil
 }
 
 // Rollback the last applied migration
 func Rollback(db *gorm.DB) error {
-	// Ensure the MigrationLog table exists
-	db.AutoMigrate(&MigrationLog{})
-
-	// Retrieve the most recently migration
-	var lastMigration MigrationLog
-	r := db.Order("applied_at desc").First(&lastMigration)
-
-	// check migation applied or not
-	// if no migration applied, no roll back
-	if r.RowsAffected == 0 {
-		fmt.Println("No migrations to roll back.")
-		return nil
-	}
-
-	// find the corresponding migration in the list
-	var migration *Migration
-	for _, m := range migrations {
-		if m.ID == lastMigration.ID {
-			migration = &m
-			break
+	// Loop through each model in modelLists
+	for _, m := range modelLists {
+		// Check if the table exists before trying to drop it
+		if db.Migrator().HasTable(m) {
+			// Attempt to drop the table
+			if err := db.Migrator().DropTable(m); err != nil {
+				return fmt.Errorf("failed to drop table for model %T: %w", m, err)
+			}
+			fmt.Printf("Successfully dropped table for model: %T\n", m)
+		} else {
+			fmt.Printf("Table for model %T does not exist, skipping drop.\n", m)
 		}
 	}
-
-	if migration == nil {
-		return fmt.Errorf("migration with ID %s not found in migrations list", lastMigration.ID)
-	}
-
-	// Roll back the migration
-	fmt.Printf("Rolling back migration: %s\n", migration.ID)
-	if err := migration.Down(db); err != nil {
-		return fmt.Errorf("failed to roll back migration %s: %w", migration.ID, err)
-	}
-
-	// Remove the migration log entry
-	if err := db.Delete(&lastMigration).Error; err != nil {
-		return fmt.Errorf("failed to delete migration log for %s: %w", migration.ID, err)
-	}
-
-	fmt.Printf("Successfully rolled back migrations: %s\n", migration.ID)
 	return nil
 }

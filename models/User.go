@@ -23,7 +23,3 @@ type User struct {
 	AccessToken   string
 	RefreshToken  string
 }
-
-func (u *User) String() string {
-	return "users"
-}
