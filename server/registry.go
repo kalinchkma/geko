@@ -26,8 +26,3 @@ func (s *Server) routesRegistry() http.Handler {
 
 	return router
 }
-
-// load adition dependency services
-func (s *Server) bootstrap() {
-
-}

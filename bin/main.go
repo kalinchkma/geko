@@ -3,6 +3,7 @@ package main
 import (
 	"ganja/initializers/database"
 	"ganja/migrations"
+	"ganja/server"
 	"os"
 )
 
@@ -23,7 +24,7 @@ func main() {
 
 	a := args[1]
 	if a == SERVER {
-		// RunServer()
+		server.RunServer()
 	} else if a == MIGRATEUP {
 		db := database.New()
 		migrations.Migrate(db.GetDB())

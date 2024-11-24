@@ -10,7 +10,7 @@ build:
 	@go build -o main bin/main.go
 
 # Run the application
-run:
+run-server:
 	@go run bin/main.go server
 
 # Run datatabase up migration

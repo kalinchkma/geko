@@ -2,6 +2,7 @@ package migrations
 
 import (
 	"fmt"
+	"ganja/models"
 	"time"
 
 	"gorm.io/gorm"
@@ -14,10 +15,12 @@ type Migration struct {
 	Applied bool
 }
 
+// This model holds the model registry for migration
 type MigrationTable struct {
 	gorm.Model
-	ID   string `gorm:"primaryKey"`
-	Name string
+	ID      string `gorm:"primaryKey"`
+	Name    string
+	Applied bool
 }
 
 // Migration list
@@ -35,9 +38,16 @@ var migrations = []Migration{
 	},
 }
 
+// List of model to migrate
+var modelList = map[string]interface{}{
+	"users":  &models.User{},
+	"guilds": &models.Guild{},
+}
+
+// This Model for tracking the migration
 type MigrationLog struct {
 	ID        string `gorm:"primaryKey"`
-	TrackIdS  []int
+	TrackIdS  []string
 	AppliedAt time.Time
 }
 
@@ -53,25 +63,27 @@ func Down(db *gorm.DB, m *gorm.Model) error {
 
 // Migrate applies all pending migration
 func Migrate(db *gorm.DB) error {
+	db.AutoMigrate(&MigrationTable{})
 	db.AutoMigrate(&MigrationLog{})
-	var appliedMigrations []MigrationLog
-	db.Find(&appliedMigrations)
 
-	appliedIDs := map[string]bool{}
+	// var appliedMigrations []MigrationLog
+	// db.Find(&appliedMigrations)
 
-	for _, m := range appliedMigrations {
-		appliedIDs[m.ID] = true
-	}
+	// appliedIDs := map[string]bool{}
 
-	for _, m := range migrations {
-		if !appliedIDs[m.ID] {
-			fmt.Printf("Applying migrationL: %s\n", m.ID)
-			if err := m.Up(db); err != nil {
-				return fmt.Errorf("failed to apply migration %s: %w", m.ID, err)
-			}
-			db.Create(&MigrationLog{ID: m.ID, AppliedAt: time.Now()})
-		}
-	}
+	// for _, m := range appliedMigrations {
+	// 	appliedIDs[m.ID] = true
+	// }
+
+	// for _, m := range migrations {
+	// 	if !appliedIDs[m.ID] {
+	// 		fmt.Printf("Applying migrationL: %s\n", m.ID)
+	// 		if err := m.Up(db); err != nil {
+	// 			return fmt.Errorf("failed to apply migration %s: %w", m.ID, err)
+	// 		}
+	// 		db.Create(&MigrationLog{ID: m.ID, AppliedAt: time.Now()})
+	// 	}
+	// }
 	return nil
 }
 

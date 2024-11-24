@@ -29,9 +29,6 @@ func NewServer() *http.Server {
 		},
 	}
 
-	// load dependency services
-	NewServer.bootstrap()
-
 	// Declare Server config
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%d", NewServer.port),

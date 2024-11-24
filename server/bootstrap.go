@@ -1,9 +1,8 @@
-package main
+package server
 
 import (
 	"context"
 	"fmt"
-	"ganja/server"
 	"log"
 	"net/http"
 	"os/signal"
@@ -36,7 +35,7 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 }
 
 func RunServer() {
-	server := server.NewServer()
+	server := NewServer()
 
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)
