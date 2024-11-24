@@ -20,11 +20,7 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 	// var errorMessage map[string]string
 	// validate requesting inputs
 	if err := ctx.ShouldBindJSON(&registerBody.Name); err != nil {
-		// fmt.Printf("%#v \n%#v", err.Error(), strings.Split(err.Error(), "\n"))
-		// fmt.Println(err.Error())
-		// for _, filedError := range strings.Split(err.Error(), "\n") {
-		// 	fmt.Println(filedError)
-		// }
+		// @TODO handle error
 		ctx.JSON(400, gin.H{
 			"error": err.Error(),
 		})
