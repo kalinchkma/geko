@@ -46,6 +46,7 @@ func New() interfaces.Mailer {
 }
 
 func (m *mailer) SendEmail(from string, to []string, subject string, body string) {
+	fmt.Println("Email body", body)
 	newMessage := gomail.NewMessage()
 	newMessage.SetHeader("From", from)
 	newMessage.SetHeader("To", to...)

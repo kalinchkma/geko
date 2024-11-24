@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"ganja/interfaces"
 
 	"log"
 	"os"
@@ -19,7 +18,7 @@ import (
 )
 
 type Database struct {
-	db      *gorm.DB
+	DB      *gorm.DB
 	connStr *string
 }
 
@@ -33,7 +32,7 @@ var (
 	dbInstance *Database
 )
 
-func New() interfaces.Database {
+func New() *Database {
 	// Reuse Connection
 	if dbInstance != nil {
 		return dbInstance
@@ -48,7 +47,7 @@ func New() interfaces.Database {
 	}
 
 	dbInstance = &Database{
-		db:      db,
+		DB:      db,
 		connStr: &connStr,
 	}
 	return dbInstance
@@ -122,7 +121,7 @@ func (s *Database) Health() map[string]string {
 // If an error occurs while closing the connection, it returns the error.
 func (s *Database) Close() error {
 	log.Printf("Disconnected from database: %s", database)
-	sqlDB, err := s.db.DB() // Retrieve the SQL database instance to close the connection
+	sqlDB, err := s.DB.DB() // Retrieve the SQL database instance to close the connection
 	if err != nil {
 		return fmt.Errorf("failed to get underlying SQL DB: %v", err)
 	}
@@ -130,5 +129,5 @@ func (s *Database) Close() error {
 }
 
 func (s *Database) GetDB() *gorm.DB {
-	return s.db
+	return s.DB
 }
