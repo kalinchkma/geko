@@ -16,7 +16,7 @@ func (r Role) String() string {
 type User struct {
 	gorm.Model
 	Name          string
-	Email         string
+	Email         string `gorm:"unique"`
 	Password      string
 	Role          Role
 	EmailVerified bool

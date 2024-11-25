@@ -45,7 +45,6 @@ func New() *Mailer {
 }
 
 func (m *Mailer) SendEmail(from string, to []string, subject string, body string) {
-	fmt.Println("Email body", body)
 	newMessage := gomail.NewMessage()
 	newMessage.SetHeader("From", from)
 	newMessage.SetHeader("To", to...)

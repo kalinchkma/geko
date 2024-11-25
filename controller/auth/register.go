@@ -29,10 +29,20 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 		})
 		return
 	}
-	// @TODO Check if user already exist
+	// Create user instant
+	var user models.User
+
+	// Find the user by email, if it's already exist
+	// Return error if user already exist
+	if res := actx.DB.GetDB().Where("email = ?", requestBody.Email).Find(&user); res.RowsAffected != 0 {
+		ctx.JSON(http.StatusConflict, gin.H{
+			"error": "User already exist",
+		})
+		return
+	}
 
 	// Create new user
-	user := models.User{
+	user = models.User{
 		Name:     requestBody.Name,
 		Email:    requestBody.Email,
 		Password: requestBody.Password,
@@ -51,7 +61,7 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 	// Send the active account otp
 	go func() {
 		otp := library.GenerateOTP(4)
-		fmt.Println("otp", otp)
+
 		(*actx).Mailer.SendEmail("no-replay@demomailtrap.com", []string{user.Email}, "Welcome to Battech", fmt.Sprintf("Your OTP: <p> %v </p>", otp))
 	}()
 	// Return success
