@@ -8,9 +8,10 @@ import (
 )
 
 const (
-	SERVER      = "server"
-	MIGRATEUP   = "migrate:up"
-	MIGRATEDOWN = "migrate:down"
+	SERVER       = "server"
+	MIGRATEUP    = "migrate:up"
+	MIGRATEFRESH = "migrate:fresh"
+	MIGRATEDOWN  = "migrate:down"
 )
 
 func main() {
@@ -31,5 +32,8 @@ func main() {
 	} else if a == MIGRATEDOWN {
 		db := database.New()
 		migrations.Rollback(db.GetDB())
+	} else if a == MIGRATEFRESH {
+		db := database.New()
+		migrations.MigrateWithCleanUp(db.DB)
 	}
 }

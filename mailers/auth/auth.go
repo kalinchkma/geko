@@ -1,10 +1,12 @@
-package mailers
+package auth_mailer
 
-import "ganja/interfaces"
+import (
+	"ganja/initializers/mailers"
+)
 
 type AuthMailer struct{}
 
-func (a *AuthMailer) Welcome(mailer *interfaces.Mailer, email string) string {
+func (a *AuthMailer) Welcome(mailer *mailers.Mailer, email string) string {
 
 	return "Welcome to the ganja"
 }

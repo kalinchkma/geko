@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"ganja/initializers/database"
+	"ganja/initializers/mailers"
 	"ganja/interfaces"
-	"ganja/mailers"
+
 	"net/http"
 	"os"
 	"strconv"

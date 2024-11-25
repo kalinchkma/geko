@@ -3,7 +3,6 @@ package mailers
 import (
 	"crypto/tls"
 	"fmt"
-	"ganja/interfaces"
 
 	"log"
 	"os"
@@ -12,22 +11,22 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-type mailer struct {
+type Mailer struct {
 	dialer *gomail.Dialer
 }
 
 var (
-	smtpHost       = os.Getenv("SMTP_HOST")
-	smtpPort       = os.Getenv("SMTP_PORT")
-	user           = os.Getenv("SMTP_USER")
-	password       = os.Getenv("SMTP_PASSWORD")
-	mailerInstance *mailer
+	smtpHost = os.Getenv("SMTP_HOST")
+	smtpPort = os.Getenv("SMTP_PORT")
+	user     = os.Getenv("SMTP_USER")
+	password = os.Getenv("SMTP_PASSWORD")
+	mailer   *Mailer
 )
 
-func New() interfaces.Mailer {
+func New() *Mailer {
 	// Reuse mailer connection
-	if mailerInstance != nil {
-		return mailerInstance
+	if mailer != nil {
+		return mailer
 	}
 
 	port, err := strconv.Atoi(smtpPort)
@@ -39,13 +38,13 @@ func New() interfaces.Mailer {
 
 	dialer.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
-	mailerInstance = &mailer{
+	mailer = &Mailer{
 		dialer,
 	}
-	return mailerInstance
+	return mailer
 }
 
-func (m *mailer) SendEmail(from string, to []string, subject string, body string) {
+func (m *Mailer) SendEmail(from string, to []string, subject string, body string) {
 	fmt.Println("Email body", body)
 	newMessage := gomail.NewMessage()
 	newMessage.SetHeader("From", from)

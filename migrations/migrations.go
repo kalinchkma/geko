@@ -60,6 +60,38 @@ func Migrate(db *gorm.DB) error {
 	// Loop through each model in modelLists and apply migrations
 	for _, model := range modelLists {
 		// Parse metadata from model
+		modelSchemaField, modelName, _, err := GetMetaData(db, model)
+		if err != nil {
+			return fmt.Errorf("error migrating %T: %w", model, err)
+		}
+
+		// Table doesn't exist, creating the table
+		fmt.Printf("Table for model %T does not exist. Creating table...\n", model)
+		if err := db.Migrator().CreateTable(model); err != nil {
+			return fmt.Errorf("failed to create table for model %T: %w", model, err)
+		}
+
+		// Record the migration to migration table
+		db.Create(&MigrationTable{Name: modelName, SchemaFields: modelSchemaField})
+		fmt.Printf("Successfully created table for model %T\n", model)
+	}
+
+	fmt.Println("Migration process completed successfully.")
+	return nil
+}
+
+// Migrate applies all pending migrations
+func MigrateWithCleanUp(db *gorm.DB) error {
+	// Check migration table is ready if not throw an error
+	if err := CheckMigrateMigrationTable(db); err != nil {
+		return err
+	}
+
+	fmt.Println("Starting migration process...")
+
+	// Loop through each model in modelLists and apply migrations
+	for _, model := range modelLists {
+		// Parse metadata from model
 		modelSchemaField, modelName, modelSchema, err := GetMetaData(db, model)
 		if err != nil {
 			return fmt.Errorf("error migrating %T: %w", model, err)
@@ -128,5 +160,9 @@ func Rollback(db *gorm.DB) error {
 			fmt.Printf("Table for model %T does not exist, skipping drop.\n", m)
 		}
 	}
+
+	// Delete all migration history or Drop table
+	db.Migrator().DropTable(&MigrationTable{})
+
 	return nil
 }
