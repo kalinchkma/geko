@@ -20,6 +20,10 @@ func RegisterAuthRoutes(actx *interfaces.AppContext, rootRouter *gin.Engine) {
 		authController.Register(actx, ctx)
 	})
 
+	router.GET("/active-account/:magic", func(ctx *gin.Context) {
+
+	})
+
 	router.POST("/verify-otp", func(ctx *gin.Context) {
 		authController.VerifyOtp(actx, ctx)
 	})

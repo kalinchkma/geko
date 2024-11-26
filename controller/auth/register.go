@@ -10,18 +10,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RequestBody struct {
+type RegisterBody struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 func Register(actx *interfaces.AppContext, ctx *gin.Context) {
-	var requestBody RequestBody
+	var registerBody RegisterBody
 
 	// var errorMessage map[string]string
 	// validate requesting inputs
-	if err := ctx.ShouldBindJSON(&requestBody); err != nil {
+	if err := ctx.ShouldBindJSON(&registerBody); err != nil {
 		// @TODO handle user input error
 		ctx.JSON(400, gin.H{
 			"error": err.Error(),
@@ -33,7 +33,7 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 
 	// Find the user by email, if it's already exist
 	// Return error if user already exist
-	if res := actx.DB.GetDB().Where("email = ?", requestBody.Email).Find(&user); res.RowsAffected != 0 {
+	if res := actx.DB.GetDB().Where("email = ?", registerBody.Email).Find(&user); res.RowsAffected != 0 {
 		ctx.JSON(http.StatusConflict, gin.H{
 			"error": "User already exist",
 		})
@@ -42,9 +42,9 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 
 	// Create new user
 	user = models.User{
-		Name:          requestBody.Name,
-		Email:         requestBody.Email,
-		Password:      requestBody.Password,
+		Name:          registerBody.Name,
+		Email:         registerBody.Email,
+		Password:      registerBody.Password,
 		EmailVerified: false,
 		AcountStatus:  false,
 		Role:          models.Role(0),
