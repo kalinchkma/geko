@@ -17,6 +17,10 @@ run-server:
 run-migrate-up:
 	@go run bin/main.go migrate:up
 
+# Run database up migration with clean unused
+run-migrate-up-clean:
+	@go run bin.main.go migrate:clean
+
 # Run database down migration
 run-migrate-down:
 	@go run bin/main.go migrate:down

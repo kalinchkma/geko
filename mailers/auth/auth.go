@@ -2,11 +2,21 @@ package auth_mailer
 
 import (
 	"ganja/initializers/mailers"
+	"ganja/models"
 )
 
 type AuthMailer struct{}
 
-func (a *AuthMailer) Welcome(mailer *mailers.Mailer, email string) string {
+type Welcome struct {
+	Name           string
+	ActivationLink string
+}
 
-	return "Welcome to the ganja"
+// Send welcome and active link
+func (a *AuthMailer) Welcome(mailer *mailers.Mailer, user models.User) {
+
+}
+
+func (a *AuthMailer) SendOTP(mailer *mailers.Mailer, user models.User) {
+
 }

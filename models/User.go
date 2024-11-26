@@ -20,6 +20,7 @@ type User struct {
 	Password      string
 	Role          Role
 	EmailVerified bool
+	AcountStatus  bool
 	AccessToken   string
 	RefreshToken  string
 }

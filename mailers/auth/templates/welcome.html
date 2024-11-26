@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+</head>
+<body>
+    <div style="display: flex;flex-direction: column;">
+        <h1 style="text-align: center;">
+            Welcome <strong>
+                {{ .Name }}
+            </strong>, you can now log in.
+        </h1>
+        <p style="text-align: center;">Verify your account with the link below:</p>
+        <a href="{{ .ActivationLink }}">{{ .ActivationLink }}</a>
+    </div>
+</body>
+</html>
