@@ -42,9 +42,12 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 
 	// Create new user
 	user = models.User{
-		Name:     requestBody.Name,
-		Email:    requestBody.Email,
-		Password: requestBody.Password,
+		Name:          requestBody.Name,
+		Email:         requestBody.Email,
+		Password:      requestBody.Password,
+		EmailVerified: false,
+		AcountStatus:  false,
+		Role:          models.Role(0),
 	}
 
 	// Save the new user
