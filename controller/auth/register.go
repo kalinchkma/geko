@@ -1,9 +1,8 @@
 package authController
 
 import (
-	"fmt"
 	"ganja/interfaces"
-	"ganja/library"
+	"ganja/mailers/auth_mailer"
 	"ganja/models"
 
 	"net/http"
@@ -59,11 +58,7 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 	}
 
 	// Send the active account otp
-	go func() {
-		otp := library.GenerateOTP(4)
-
-		(*actx).Mailer.SendEmail("no-replay@demomailtrap.com", []string{user.Email}, "Welcome to Battech", fmt.Sprintf("Your OTP: <p> %v </p>", otp))
-	}()
+	go auth_mailer.Welcome(actx.Mailer, user)
 	// Return success
 	ctx.SecureJSON(http.StatusOK, gin.H{"message": "User registered successfully!"})
 }

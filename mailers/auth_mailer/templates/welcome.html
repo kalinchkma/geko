@@ -6,14 +6,14 @@
     <title>Welcome</title>
 </head>
 <body>
-    <div style="display: flex;flex-direction: column;">
+    <main>
         <h1 style="text-align: center;">
             Welcome <strong>
                 {{ .Name }}
             </strong>, you can now log in.
         </h1>
-        <p style="text-align: center;">Verify your account with the link below:</p>
+        <h3 style="text-align: center;">Verify your account with the link below:</h3>
         <a href="{{ .ActivationLink }}">{{ .ActivationLink }}</a>
-    </div>
+    </main>
 </body>
 </html>

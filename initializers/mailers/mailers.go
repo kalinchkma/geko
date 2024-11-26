@@ -2,7 +2,6 @@ package mailers
 
 import (
 	"crypto/tls"
-	"fmt"
 
 	"log"
 	"os"
@@ -44,7 +43,7 @@ func New() *Mailer {
 	return mailer
 }
 
-func (m *Mailer) SendEmail(from string, to []string, subject string, body string) {
+func (m *Mailer) SendEmail(from string, to []string, subject string, body string) error {
 	newMessage := gomail.NewMessage()
 	newMessage.SetHeader("From", from)
 	newMessage.SetHeader("To", to...)
@@ -52,7 +51,7 @@ func (m *Mailer) SendEmail(from string, to []string, subject string, body string
 	newMessage.SetBody("text/html", body)
 
 	if err := (*m).dialer.DialAndSend(newMessage); err != nil {
-		// log.Fatal(err)
-		fmt.Println(err)
+		return err
 	}
+	return nil
 }
