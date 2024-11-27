@@ -2,6 +2,7 @@ package authController
 
 import (
 	"ganja/interfaces"
+	"ganja/library"
 	"ganja/mailers/auth_mailer"
 	"ganja/models"
 
@@ -40,13 +41,21 @@ func Register(actx *interfaces.AppContext, ctx *gin.Context) {
 		return
 	}
 
+	hashedPassword, err := library.HashPassword(registerBody.Password)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"error": err,
+		})
+	}
+
 	// Create new user
 	user = models.User{
 		Name:          registerBody.Name,
 		Email:         registerBody.Email,
-		Password:      registerBody.Password,
-		EmailVerified: false,
-		AcountStatus:  false,
+		Password:      hashedPassword,
+		EmailVerified: true,
+		AcountStatus:  true,
 		Role:          models.Role(0),
 	}
 
