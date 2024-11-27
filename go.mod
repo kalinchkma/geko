@@ -11,7 +11,10 @@ require (
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 )
 
-require gorm.io/driver/postgres v1.5.9 // indirect
+require (
+	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
+	gorm.io/driver/postgres v1.5.9 // indirect
+)
 
 require (
 	dario.cat/mergo v1.0.0 // indirect
