@@ -60,20 +60,28 @@ func Login(actx *interfaces.AppContext, ctx *gin.Context) {
 	}
 
 	// Login the user with access token
+	privateKey, publicKey, err := library.GenerateECDSAKeys()
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"message": "internal server error",
+			"error":   err.Error(),
+		})
+	}
 
 	// token data
-
-	if token, err := library.GenerateJWT(user.Name, time.Duration(time.Minute*10)); err != nil {
+	if token, err := library.GenerateJWT(user.Name, time.Duration(time.Minute*10), privateKey); err != nil {
 		// Respose error
 		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Internal server error",
+			"message": "Internal server error",
+			"errors":  err.Error(),
 		})
 		return
 	} else {
 		// Respose with token
 		ctx.JSON(http.StatusOK, gin.H{
-			"success": "Login success",
-			"token":   token,
+			"success":    "Login success",
+			"token":      token,
+			"public_key": publicKey,
 		})
 	}
 

@@ -1,15 +1,25 @@
 package library
 
 import (
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
 	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var tokenSecret = "super secret"
+// Generate a ECDSA private key
+func GenerateECDSAKeys() (*ecdsa.PrivateKey, *ecdsa.PublicKey, error) {
+	privateKey, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		return nil, nil, err
+	}
+	return privateKey, &privateKey.PublicKey, nil
+}
 
-func GenerateJWT(data string, validity time.Duration) (string, error) {
+func GenerateJWT(data string, validity time.Duration, privateKey *ecdsa.PrivateKey) (string, error) {
 	// Define token claims
 	claims := jwt.MapClaims{
 		"data": data,
@@ -22,16 +32,16 @@ func GenerateJWT(data string, validity time.Duration) (string, error) {
 
 	// Sign the token with the secret key
 	// @TODO add strong token secrect on
-	return token.SignedString(tokenSecret)
+	return token.SignedString(privateKey)
 }
 
-func ValidateJWT(tokenString string) (string, error) {
+func ValidateJWT(tokenString string, publicKey *ecdsa.PublicKey) (string, error) {
 	// Parse the token
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+		if _, ok := t.Method.(*jwt.SigningMethodECDSA); !ok {
 			return nil, errors.New("unexpected signing method")
 		}
-		return tokenSecret, nil
+		return publicKey, nil
 	})
 
 	if err != nil {
