@@ -19,3 +19,13 @@
 
 4. View
     * Implement how will present the data to user
+
+## Features
+
+1. Data controll
+    1. Secure Authentication
+    2. Manage data by securing access controll by a admin
+
+## On going task 
+    
+1. Implement secure authentication
