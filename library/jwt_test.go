@@ -27,3 +27,21 @@ func TestGenerateJWT(t *testing.T) {
 		t.Fatalf("Faild geneating JWT")
 	}
 }
+
+func TestVerifyJWT(t *testing.T) {
+	priv, pub, err := GenerateECDSAKeys()
+	if err != nil {
+		t.Fatal("Faild to Generate ECDSA", err)
+	}
+	token, err := GenerateJWT("1", time.Duration(time.Second*20), priv)
+	if err != nil {
+		t.Fatalf("Failed geneating JWT")
+	}
+
+	res, err := ValidateJWT(token, pub)
+	if err != nil {
+		t.Fatalf("Error verifying Token")
+	} else {
+		fmt.Println("verifyed data: --", res)
+	}
+}
