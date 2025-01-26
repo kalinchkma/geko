@@ -7,7 +7,7 @@ build-http-server:
 	@echo "Building..."
 	
 	
-	@go build -o main cmd/http_server/main.go
+	@go build -o bin/main cmd/http_server/main.go
 
 # Run http server
 run-http-server:

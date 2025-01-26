@@ -5,6 +5,7 @@ import (
 	"geko/internal/cache"
 	"geko/internal/db"
 	"geko/internal/env"
+	"geko/internal/ratelimiter"
 	"geko/internal/server"
 	"log"
 	"time"
@@ -49,7 +50,7 @@ func main() {
 		AuthCfg: server.AuthConfig{
 			// @TODO implement auth config
 		},
-		RateLimiterCfg: server.RateLimiterConfig{
+		RateLimiterCfg: ratelimiter.RateLimiterConfig{
 			RequestsPerTimeFrame: env.GetInt("RATELIMITER_REQUEST_COUNT", 20),
 			TimeFrame:            time.Second * 5,
 			Enabled:              env.GetBool("RATE_LIMITER_ENABLED", true),

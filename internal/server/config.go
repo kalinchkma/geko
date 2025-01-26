@@ -3,7 +3,7 @@ package server
 import (
 	"geko/internal/cache"
 	"geko/internal/db"
-	"time"
+	"geko/internal/ratelimiter"
 )
 
 type Config struct {
@@ -13,17 +13,11 @@ type Config struct {
 	MailerCfg      MailerConfig
 	AuthCfg        AuthConfig
 	RedisCfg       cache.RedisConfig
-	RateLimiterCfg RateLimiterConfig
+	RateLimiterCfg ratelimiter.RateLimiterConfig
 }
 
 type MailerConfig struct {
 }
 
 type AuthConfig struct {
-}
-
-type RateLimiterConfig struct {
-	RequestsPerTimeFrame int
-	TimeFrame            time.Duration
-	Enabled              bool
 }
