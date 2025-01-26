@@ -3,9 +3,9 @@ package server
 import (
 	"fmt"
 
-	"ganja/initializers/database"
-	"ganja/initializers/mailers"
-	"ganja/interfaces"
+	"geko/initializers/database"
+	"geko/initializers/mailers"
+	"geko/interfaces"
 
 	"net/http"
 	"os"

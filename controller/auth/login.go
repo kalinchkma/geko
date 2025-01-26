@@ -1,9 +1,9 @@
 package authController
 
 import (
-	"ganja/interfaces"
-	"ganja/library"
-	"ganja/models"
+	"geko/interfaces"
+	"geko/library"
+	"geko/models"
 	"net/http"
 	"time"
 

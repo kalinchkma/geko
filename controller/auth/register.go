@@ -1,10 +1,10 @@
 package authController
 
 import (
-	"ganja/interfaces"
-	"ganja/library"
-	"ganja/mailers/auth_mailer"
-	"ganja/models"
+	"geko/interfaces"
+	"geko/library"
+	"geko/mailers/auth_mailer"
+	"geko/models"
 
 	"net/http"
 

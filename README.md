@@ -1,4 +1,4 @@
-# Project ganja
+# Geko
 
 Wrapper for creating golang server native application using popular library 
 
@@ -6,7 +6,6 @@ Wrapper for creating golang server native application using popular library
 1. [Gin](https://gin-gonic.com/docs/): For http request handling
 2. [Gomail](https://pkg.go.dev/gopkg.in/gomail.v2): For mailer
 3. [Gorm](https://gorm.io/docs/): For ORM
-
 
 
 ## Getting Started
@@ -27,7 +26,7 @@ make build
 
 Run the application
 ```bash
-make run
+make run-http-server
 ```
 
 Run the database up migration

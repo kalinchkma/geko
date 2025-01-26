@@ -2,7 +2,7 @@ package routes
 
 import (
 	"fmt"
-	"ganja/interfaces"
+	"geko/interfaces"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

@@ -9,11 +9,11 @@ import (
 	"syscall"
 	"time"
 
-	"ganja/internal/auth"
-	"ganja/internal/cache"
-	"ganja/internal/mailers"
-	"ganja/internal/ratelimiter"
-	"ganja/internal/store"
+	"geko/internal/auth"
+	"geko/internal/cache"
+	"geko/internal/mailers"
+	"geko/internal/ratelimiter"
+	"geko/internal/store"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -32,6 +32,16 @@ type HttpServer struct {
 
 // Mount the server router
 func (server *HttpServer) Mount() http.Handler {
+	// Setting gin routing mode
+	if server.Config.Env == "development" {
+		gin.SetMode(gin.DebugMode)
+	} else if server.Config.Env == "testing" {
+		gin.SetMode(gin.TestMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	// Base route hander
 	hander := gin.Default()
 
 	// Implement the middleware
@@ -40,7 +50,7 @@ func (server *HttpServer) Mount() http.Handler {
 }
 
 // Run the HttpServer
-func (server *HttpServer) Run(handler http.Handler) error {
+func (server *HttpServer) RunServer(handler http.Handler) error {
 
 	srv := &http.Server{
 		Addr:         server.Config.Addr,

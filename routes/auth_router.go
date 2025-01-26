@@ -1,8 +1,8 @@
 package routes
 
 import (
-	authController "ganja/controller/auth"
-	"ganja/interfaces"
+	authController "geko/controller/auth"
+	"geko/interfaces"
 
 	"github.com/gin-gonic/gin"
 )

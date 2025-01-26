@@ -2,9 +2,9 @@ package auth_mailer
 
 import (
 	"fmt"
-	"ganja/initializers/mailers"
-	"ganja/library"
-	"ganja/models"
+	"geko/initializers/mailers"
+	"geko/library"
+	"geko/models"
 )
 
 type WelcomeTemplate struct {

@@ -1,8 +1,8 @@
 package interfaces
 
 import (
-	"ganja/initializers/database"
-	"ganja/initializers/mailers"
+	"geko/initializers/database"
+	"geko/initializers/mailers"
 )
 
 type AppContext struct {

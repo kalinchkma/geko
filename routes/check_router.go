@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"ganja/interfaces"
+	"geko/interfaces"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

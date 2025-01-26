@@ -1,4 +1,4 @@
-module ganja
+module geko
 
 go 1.23.2
 

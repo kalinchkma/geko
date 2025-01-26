@@ -1,7 +1,7 @@
 package authController
 
 import (
-	"ganja/interfaces"
+	"geko/interfaces"
 
 	"github.com/gin-gonic/gin"
 )

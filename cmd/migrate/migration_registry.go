@@ -1,6 +1,6 @@
 package migrations
 
-import "ganja/models"
+import "geko/models"
 
 // Register model for migration
 var modelLists = map[string]interface{}{

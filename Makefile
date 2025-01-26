@@ -3,15 +3,15 @@
 # Build the application
 all: build test
 
-build:
+build-http-server:
 	@echo "Building..."
 	
 	
-	@go build -o main bin/main.go
+	@go build -o main cmd/http_server/main.go
 
-# Run the application
-run-server:
-	@go run bin/main.go server
+# Run http server
+run-http-server:
+	@go run cmd/http_server/main.go server
 
 # Run datatabase up migration
 run-migrate-up:

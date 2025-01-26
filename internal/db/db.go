@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"log"
-	"os"
 	"strconv"
 	"time"
 
@@ -17,27 +16,33 @@ import (
 	"gorm.io/gorm"
 )
 
+type DatabaseConfig struct {
+	Host         string
+	Port         string
+	DBUserName   string
+	DBDatabase   string
+	DBPassword   string
+	DBSchema     string
+	MaxOpenConns int
+	MaxIdleConns int
+	MaxIdleTime  string
+}
 type Database struct {
 	DB      *gorm.DB
 	connStr *string
+	cfg     DatabaseConfig
 }
 
 var (
-	database   = os.Getenv("DB_DATABASE")
-	password   = os.Getenv("DB_PASSWORD")
-	username   = os.Getenv("DB_USERNAME")
-	port       = os.Getenv("DB_PORT")
-	host       = os.Getenv("DB_HOST")
-	schema     = os.Getenv("DB_SCHEMA")
 	dbInstance *Database
 )
 
-func New() *Database {
+func New(cfg DatabaseConfig) *Database {
 	// Reuse Connection
 	if dbInstance != nil {
 		return dbInstance
 	}
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", username, password, host, port, database, schema)
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", cfg.DBUserName, cfg.DBPassword, cfg.Host, cfg.Port, cfg.DBDatabase, cfg.DBSchema)
 
 	// test the orm database
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
@@ -120,7 +125,7 @@ func (s *Database) Health() map[string]string {
 // If the connection is successfully closed, it returns nil.
 // If an error occurs while closing the connection, it returns the error.
 func (s *Database) Close() error {
-	log.Printf("Disconnected from database: %s", database)
+	log.Printf("Disconnected from %v", s.cfg.DBDatabase)
 	sqlDB, err := s.DB.DB() // Retrieve the SQL database instance to close the connection
 	if err != nil {
 		return fmt.Errorf("failed to get underlying SQL DB: %v", err)
