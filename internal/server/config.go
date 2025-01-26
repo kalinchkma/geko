@@ -1,11 +1,11 @@
-package app
+package server
 
 import "time"
 
 type Config struct {
 	Addr           string
 	Env            string
-	DatabaseCfg    DatabaseConfig
+	DbCfg          DatabaseConfig
 	MailerCfg      MailerConfig
 	AuthCfg        AuthConfig
 	RedisCfg       RedisConfig
@@ -26,6 +26,10 @@ type AuthConfig struct {
 }
 
 type RedisConfig struct {
+	Addr    string
+	PW      string // Password
+	DB      int
+	Enabled bool
 }
 
 type RateLimiterConfig struct {
