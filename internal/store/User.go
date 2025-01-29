@@ -1,6 +1,10 @@
 package store
 
-import "gorm.io/gorm"
+import (
+	"geko/internal/db"
+
+	"gorm.io/gorm"
+)
 
 const (
 	GuildMaster = iota
@@ -13,6 +17,7 @@ func (r Role) String() string {
 	return [...]string{"Guild Master", "Adventurer"}[r]
 }
 
+// User model
 type User struct {
 	gorm.Model
 	Name          string
@@ -25,6 +30,27 @@ type User struct {
 	RefreshToken  string
 }
 
-func (u *User) Create() {
+type UserStore struct {
+	db db.Database
+}
+
+func (u *UserStore) Create(user User) error {
+	// Store user to database
+	res := u.db.DB.Create(&user)
+	if res.Error != nil {
+		return res.Error
+	}
+	return nil
+}
+
+func (u *UserStore) FindByEmail(email string) (User, error) {
+	var user User
+
+	res := u.db.DB.Where("email = ?", email).Find(&user)
+	if res.Error != nil {
+		return User{}, res.Error
+	}
+
+	return user, nil
 
 }
