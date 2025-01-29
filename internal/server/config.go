@@ -16,8 +16,8 @@ type Config struct {
 	RateLimiterCfg ratelimiter.RateLimiterConfig
 }
 
-type MailerConfig struct {
+type AuthConfig struct {
 }
 
-type AuthConfig struct {
+type MailerConfig struct {
 }

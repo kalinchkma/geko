@@ -6,7 +6,17 @@ Wrapper for creating golang server native application using popular library
 1. [Gin](https://gin-gonic.com/docs/): For http request handling
 2. [Gomail](https://pkg.go.dev/gopkg.in/gomail.v2): For mailer
 3. [Gorm](https://gorm.io/docs/): For ORM
+4. [Redis](https://github.com/redis/go-redis): For caching
 
+
+## Features
+- [x] Http server base configuration
+- [x] Database configuration setup
+- [x] Redis setup
+- [x] Mailers setup
+- [ ] Ratelimiter 
+- [ ] Authentication system
+- [ ] Plug in go Services system 
 
 ## Getting Started
 
@@ -27,16 +37,6 @@ make build
 Run the application
 ```bash
 make run-http-server
-```
-
-Run the database up migration
-```bash
-make run-migration-up
-```
-
-Run the database down migration
-```bash
-make run-migration-down
 ```
 
 Create DB container
