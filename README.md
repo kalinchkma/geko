@@ -12,8 +12,8 @@ Wrapper for creating golang server native application using popular library
 ## Features
 - [x] Http server configuration
 - [x] Database configuration setup
-- [x] Redis setup
-- [x] Mailers setup
+- [x] Redis caching supporst 
+- [x] Mailers supports
 - [ ] Ratelimiter 
 - [ ] Authentication system
 - [ ] Plug in based Services system 
