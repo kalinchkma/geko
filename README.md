@@ -16,7 +16,8 @@ Wrapper for creating golang server native application using popular library
 - [x] Mailers setup
 - [ ] Ratelimiter 
 - [ ] Authentication system
-- [ ] Plug in go Services system 
+- [ ] Plug in based Services system 
+- [ ] Web socket supports
 
 ## Getting Started
 
