@@ -10,7 +10,7 @@ Wrapper for creating golang server native application using popular library
 
 
 ## Features
-- [x] Http server base configuration
+- [x] Http server configuration
 - [x] Database configuration setup
 - [x] Redis setup
 - [x] Mailers setup
