@@ -2,9 +2,8 @@ package db
 
 import (
 	"context"
-	"geko/internal/env"
+	"fmt"
 	"log"
-	"os"
 	"testing"
 	"time"
 
@@ -14,11 +13,11 @@ import (
 )
 
 var (
-	database = os.Getenv("DB_DATABASE")
-	password = os.Getenv("DB_PASSWORD")
-	username = os.Getenv("DB_USERNAME")
-	port     = os.Getenv("DB_PORT")
-	host     = os.Getenv("DB_HOST")
+	database = "database"
+	password = "password"
+	username = "user"
+	port     = "5432"
+	host     = "127.0.0.1"
 )
 
 func mustStartPostgresContainer() (func(context.Context) error, error) {
@@ -48,6 +47,7 @@ func mustStartPostgresContainer() (func(context.Context) error, error) {
 	username = dbUser
 
 	dbHost, err := dbContainer.Host(context.Background())
+	fmt.Println("Created database host", dbHost)
 	if err != nil {
 		return dbContainer.Terminate, err
 	}
@@ -78,15 +78,15 @@ func TestMain(m *testing.M) {
 
 func TestNew(t *testing.T) {
 	srv := New(DatabaseConfig{
-		Host:         env.GetString("DB_HOST", "127.0.0.1"),
-		Port:         env.GetString("DB_PORT", "5432"),
-		DBUserName:   env.GetString("DB_USERNAME", "admin"),
-		DBDatabase:   env.GetString("DB_DATABASE", "geko"),
-		DBPassword:   env.GetString("DB_PASSWORD", ""),
-		DBSchema:     env.GetString("DB_SCHEMA", "public"),
-		MaxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
-		MaxIdleConns: env.GetInt("DB_MAX_IDLE_CONNS", 30),
-		MaxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
+		Host:         host,
+		Port:         port,
+		DBUserName:   username,
+		DBDatabase:   database,
+		DBPassword:   password,
+		DBSchema:     "public",
+		MaxOpenConns: 30,
+		MaxIdleConns: 30,
+		MaxIdleTime:  "15m",
 	})
 	if srv == nil {
 		t.Fatal("New() returned nil")
@@ -95,15 +95,15 @@ func TestNew(t *testing.T) {
 
 func TestHealth(t *testing.T) {
 	srv := New(DatabaseConfig{
-		Host:         env.GetString("DB_HOST", "127.0.0.1"),
-		Port:         env.GetString("DB_PORT", "5432"),
-		DBUserName:   env.GetString("DB_USERNAME", "admin"),
-		DBDatabase:   env.GetString("DB_DATABASE", "geko"),
-		DBPassword:   env.GetString("DB_PASSWORD", ""),
-		DBSchema:     env.GetString("DB_SCHEMA", "public"),
-		MaxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
-		MaxIdleConns: env.GetInt("DB_MAX_IDLE_CONNS", 30),
-		MaxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
+		Host:         host,
+		Port:         port,
+		DBUserName:   username,
+		DBDatabase:   database,
+		DBPassword:   password,
+		DBSchema:     "public",
+		MaxOpenConns: 30,
+		MaxIdleConns: 30,
+		MaxIdleTime:  "15m",
 	})
 
 	stats := srv.Health()
@@ -123,15 +123,15 @@ func TestHealth(t *testing.T) {
 
 func TestClose(t *testing.T) {
 	srv := New(DatabaseConfig{
-		Host:         env.GetString("DB_HOST", "127.0.0.1"),
-		Port:         env.GetString("DB_PORT", "5432"),
-		DBUserName:   env.GetString("DB_USERNAME", "admin"),
-		DBDatabase:   env.GetString("DB_DATABASE", "geko"),
-		DBPassword:   env.GetString("DB_PASSWORD", ""),
-		DBSchema:     env.GetString("DB_SCHEMA", "public"),
-		MaxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
-		MaxIdleConns: env.GetInt("DB_MAX_IDLE_CONNS", 30),
-		MaxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
+		Host:         host,
+		Port:         port,
+		DBUserName:   username,
+		DBDatabase:   database,
+		DBPassword:   password,
+		DBSchema:     "public",
+		MaxOpenConns: 30,
+		MaxIdleConns: 30,
+		MaxIdleTime:  "15m",
 	})
 
 	if srv.Close() != nil {

@@ -43,7 +43,7 @@ func New(cfg DatabaseConfig) *Database {
 		return dbInstance
 	}
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", cfg.DBUserName, cfg.DBPassword, cfg.Host, cfg.Port, cfg.DBDatabase, cfg.DBSchema)
-
+	fmt.Println("connection string", connStr)
 	// test the orm database
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
 
