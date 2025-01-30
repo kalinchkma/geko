@@ -19,8 +19,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// Http server
-type HttpServer struct {
+type HttpServerContext struct {
 	Config        Config
 	Store         store.Storage
 	Mailer        mailers.Client
@@ -30,13 +29,30 @@ type HttpServer struct {
 	RateLimiter   ratelimiter.Limiter
 }
 
+// Http server
+type HttpServer struct {
+	Ctx *HttpServerContext
+}
+
+// Mount the service
+func (server *HttpServer) MountService(mountPath string, handler *gin.Engine, service Service) {
+	// base route group
+	group := handler.Group(mountPath)
+
+	// Mount the service to current server
+	service.Mount(server.Ctx, group)
+
+	// Register the service
+	service.Registry()
+}
+
 // Mount the server router
-func (server *HttpServer) Mount() http.Handler {
+func (server *HttpServer) Mount() *gin.Engine {
 	// Configure gin routing mode
 	// Based on environtment
-	if server.Config.Env == "development" {
+	if server.Ctx.Config.Env == "development" {
 		gin.SetMode(gin.DebugMode)
-	} else if server.Config.Env == "testing" {
+	} else if server.Ctx.Config.Env == "testing" {
 		gin.SetMode(gin.TestMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
@@ -54,7 +70,7 @@ func (server *HttpServer) RunServer(handler http.Handler) error {
 	// Initialize http server base on configuration
 	// You can customize as you want
 	srv := &http.Server{
-		Addr:         server.Config.Addr,
+		Addr:         server.Ctx.Config.Addr,
 		Handler:      handler,
 		WriteTimeout: time.Second * 30,
 		ReadTimeout:  time.Second * 10,
@@ -77,18 +93,18 @@ func (server *HttpServer) RunServer(handler http.Handler) error {
 		s := <-quit
 
 		// gracefully shutdown context
-		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		Ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 
 		// Shutdown log
-		server.Logger.Infow("signal", s.String())
+		server.Ctx.Logger.Infow("signal", s.String())
 
 		// Catch shutdown log if any
-		shutdown <- srv.Shutdown(ctx)
+		shutdown <- srv.Shutdown(Ctx)
 	}()
 
 	// Server started log
-	server.Logger.Infow("Server has started", "addr", server.Config.Addr, "env", server.Config.Env)
+	server.Ctx.Logger.Infow("Server has started", "addr", server.Ctx.Config.Addr, "env", server.Ctx.Config.Env)
 
 	// Serve server
 	err := srv.ListenAndServe()
@@ -106,7 +122,7 @@ func (server *HttpServer) RunServer(handler http.Handler) error {
 	}
 
 	// Server stopped error
-	server.Logger.Infow("Server has stopped", "addr", server.Config.Addr, "env", server.Config.Env)
+	server.Ctx.Logger.Infow("Server has stopped", "addr", server.Ctx.Config.Addr, "env", server.Ctx.Config.Env)
 
 	return nil
 }

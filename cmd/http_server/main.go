@@ -7,6 +7,8 @@ import (
 	"geko/internal/env"
 	"geko/internal/ratelimiter"
 	"geko/internal/server"
+	authservice "geko/services/auth_service"
+	orderservice "geko/services/order_service"
 	"log"
 	"time"
 
@@ -61,13 +63,21 @@ func main() {
 	logger := zap.Must(zap.NewProduction()).Sugar()
 	defer logger.Sync()
 
-	// Server
-	srv := &server.HttpServer{
+	// Server context
+	ctx := &server.HttpServerContext{
 		Config: cfg,
 		Logger: logger,
 	}
 
+	// Server
+	srv := &server.HttpServer{
+		Ctx: ctx,
+	}
+
 	router := srv.Mount()
+
+	srv.MountService("/auth", router, &authservice.AuthService{})
+	srv.MountService("/order", router, &orderservice.OrderService{})
 
 	logger.Fatal(srv.RunServer(router))
 
