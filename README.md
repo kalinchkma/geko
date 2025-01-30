@@ -1,5 +1,7 @@
 # Geko
 
+![Geko](geko.png)
+
 Wrapper for creating golang server native application using popular library 
 
 ## Package used
