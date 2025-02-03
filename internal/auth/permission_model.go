@@ -1,7 +1,7 @@
 package auth
 
 type Permission struct {
-	Owner  [3]rune
-	Group  [3]rune
-	Others [3]rune
+	Owner  [3]rune // rwx base permission of a model for Owner
+	Group  [3]rune // rwx base permission of a model for Group user
+	Others [3]rune // rwx base permission of a model for others users
 }
