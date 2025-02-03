@@ -12,8 +12,8 @@ type Service interface {
 	// Befor plug in to server
 	Mount(*HttpServerContext, *gin.RouterGroup)
 
-	// Registry method where server route will mount
-	Registry()
+	// Attach method where server route will mount
+	Attach()
 }
 
 // This type will

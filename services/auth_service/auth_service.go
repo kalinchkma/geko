@@ -18,8 +18,8 @@ func (s *AuthService) Mount(serverContext *server.HttpServerContext, route *gin.
 	s.route = route
 }
 
-// Service route registry
-func (s *AuthService) Registry() {
+// Service route Attach
+func (s *AuthService) Attach() {
 	s.route.GET("/login", s.login)
 	s.route.GET("/register", s.register)
 }

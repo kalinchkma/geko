@@ -31,7 +31,14 @@ type HttpServerContext struct {
 
 // Http server
 type HttpServer struct {
-	Ctx *HttpServerContext
+	context *HttpServerContext
+}
+
+// Constructor
+func NewHttpServer(context *HttpServerContext) *HttpServer {
+	return &HttpServer{
+		context: context,
+	}
 }
 
 // Mount the service
@@ -40,19 +47,19 @@ func (server *HttpServer) MountService(mountPath string, handler *gin.Engine, se
 	group := handler.Group(mountPath)
 
 	// Mount the service to current server
-	service.Mount(server.Ctx, group)
+	service.Mount(server.context, group)
 
 	// Register the service
-	service.Registry()
+	service.Attach()
 }
 
 // Mount the server router
 func (server *HttpServer) Mount() *gin.Engine {
 	// Configure gin routing mode
 	// Based on environtment
-	if server.Ctx.Config.Env == "development" {
+	if server.context.Config.Env == "development" {
 		gin.SetMode(gin.DebugMode)
-	} else if server.Ctx.Config.Env == "testing" {
+	} else if server.context.Config.Env == "testing" {
 		gin.SetMode(gin.TestMode)
 	} else {
 		gin.SetMode(gin.ReleaseMode)
@@ -65,12 +72,12 @@ func (server *HttpServer) Mount() *gin.Engine {
 }
 
 // Run the HttpServer
-func (server *HttpServer) RunServer(handler http.Handler) error {
+func (server *HttpServer) Start(handler http.Handler) error {
 
 	// Initialize http server base on configuration
 	// You can customize as you want
 	srv := &http.Server{
-		Addr:         server.Ctx.Config.Addr,
+		Addr:         server.context.Config.Addr,
 		Handler:      handler,
 		WriteTimeout: time.Second * 30,
 		ReadTimeout:  time.Second * 10,
@@ -97,14 +104,14 @@ func (server *HttpServer) RunServer(handler http.Handler) error {
 		defer cancel()
 
 		// Shutdown log
-		server.Ctx.Logger.Infow("signal", s.String())
+		server.context.Logger.Infow("signal", s.String())
 
 		// Catch shutdown log if any
 		shutdown <- srv.Shutdown(Ctx)
 	}()
 
 	// Server started log
-	server.Ctx.Logger.Infow("Server has started", "addr", server.Ctx.Config.Addr, "env", server.Ctx.Config.Env)
+	server.context.Logger.Infow("Server has started", "addr", server.context.Config.Addr, "env", server.context.Config.Env)
 
 	// Serve server
 	err := srv.ListenAndServe()
@@ -122,7 +129,7 @@ func (server *HttpServer) RunServer(handler http.Handler) error {
 	}
 
 	// Server stopped error
-	server.Ctx.Logger.Infow("Server has stopped", "addr", server.Ctx.Config.Addr, "env", server.Ctx.Config.Env)
+	server.context.Logger.Infow("Server has stopped", "addr", server.context.Config.Addr, "env", server.context.Config.Env)
 
 	return nil
 }

@@ -18,8 +18,8 @@ func (s *OrderService) Mount(serverContext *server.HttpServerContext, route *gin
 	s.route = route
 }
 
-// Service route registry
-func (s *OrderService) Registry() {
+// Service route Attach
+func (s *OrderService) Attach() {
 	s.route.GET("/", s.TestOrder)
 }
 

@@ -70,15 +70,13 @@ func main() {
 	}
 
 	// Server
-	srv := &server.HttpServer{
-		Ctx: ctx,
-	}
+	srv := server.NewHttpServer(ctx)
 
 	router := srv.Mount()
 
 	srv.MountService("/auth", router, &authservice.AuthService{})
 	srv.MountService("/order", router, &orderservice.OrderService{})
 
-	logger.Fatal(srv.RunServer(router))
+	logger.Fatal(srv.Start(router))
 
 }
