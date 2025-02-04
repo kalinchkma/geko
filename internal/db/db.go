@@ -28,7 +28,7 @@ type DatabaseConfig struct {
 	MaxIdleTime  string
 }
 type Database struct {
-	DB      *gorm.DB
+	ORM     *gorm.DB
 	connStr *string
 	cfg     DatabaseConfig
 }
@@ -52,7 +52,7 @@ func New(cfg DatabaseConfig) *Database {
 	}
 
 	dbInstance = &Database{
-		DB:      db,
+		ORM:     db,
 		connStr: &connStr,
 	}
 	return dbInstance
@@ -126,7 +126,7 @@ func (s *Database) Health() map[string]string {
 // If an error occurs while closing the connection, it returns the error.
 func (s *Database) Close() error {
 	log.Printf("Disconnected from %v", s.cfg.DBDatabase)
-	sqlDB, err := s.DB.DB() // Retrieve the SQL database instance to close the connection
+	sqlDB, err := s.ORM.DB() // Retrieve the SQL database instance to close the connection
 	if err != nil {
 		return fmt.Errorf("failed to get underlying SQL DB: %v", err)
 	}
@@ -134,5 +134,5 @@ func (s *Database) Close() error {
 }
 
 func (s *Database) GetDB() *gorm.DB {
-	return s.DB
+	return s.ORM
 }
