@@ -20,7 +20,7 @@ type DatabaseConfig struct {
 	Host         string
 	Port         string
 	DBUserName   string
-	DBDatabase   string
+	DBName       string
 	DBPassword   string
 	DBSchema     string
 	MaxOpenConns int
@@ -42,7 +42,7 @@ func New(cfg DatabaseConfig) *Database {
 	if dbInstance != nil {
 		return dbInstance
 	}
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", cfg.DBUserName, cfg.DBPassword, cfg.Host, cfg.Port, cfg.DBDatabase, cfg.DBSchema)
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable&search_path=%s", cfg.DBUserName, cfg.DBPassword, cfg.Host, cfg.Port, cfg.DBName, cfg.DBSchema)
 	fmt.Println("connection string", connStr)
 	// test the orm database
 	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
@@ -125,7 +125,7 @@ func (s *Database) Health() map[string]string {
 // If the connection is successfully closed, it returns nil.
 // If an error occurs while closing the connection, it returns the error.
 func (s *Database) Close() error {
-	log.Printf("Disconnected from %v", s.cfg.DBDatabase)
+	log.Printf("Disconnected from %v", s.cfg.DBName)
 	sqlDB, err := s.ORM.DB() // Retrieve the SQL database instance to close the connection
 	if err != nil {
 		return fmt.Errorf("failed to get underlying SQL DB: %v", err)

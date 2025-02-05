@@ -31,7 +31,7 @@ func main() {
 			Host:         env.GetString("DB_HOST", "127.0.0.1"),
 			Port:         env.GetString("DB_PORT", "5432"),
 			DBUserName:   env.GetString("DB_USERNAME", "admin"),
-			DBDatabase:   env.GetString("DB_DATABASE", "geko"),
+			DBName:       env.GetString("DB_NAME", "geko"),
 			DBPassword:   env.GetString("DB_PASSWORD", ""),
 			DBSchema:     env.GetString("DB_SCHEMA", "public"),
 			MaxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
