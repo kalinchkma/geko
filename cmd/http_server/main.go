@@ -7,6 +7,7 @@ import (
 	"geko/internal/env"
 	"geko/internal/ratelimiter"
 	"geko/internal/server"
+	"geko/internal/store"
 	authservice "geko/services/auth_service"
 	orderservice "geko/services/order_service"
 	"log"
@@ -27,17 +28,6 @@ func main() {
 	// Server config
 	cfg := server.Config{
 		Addr: fmt.Sprintf(":%v", env.GetString("PORT", "8080")),
-		DbCfg: db.DatabaseConfig{
-			Host:         env.GetString("DB_HOST", "127.0.0.1"),
-			Port:         env.GetString("DB_PORT", "5432"),
-			DBUserName:   env.GetString("DB_USERNAME", "admin"),
-			DBName:       env.GetString("DB_NAME", "geko"),
-			DBPassword:   env.GetString("DB_PASSWORD", ""),
-			DBSchema:     env.GetString("DB_SCHEMA", "public"),
-			MaxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
-			MaxIdleConns: env.GetInt("DB_MAX_IDLE_CONNS", 30),
-			MaxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
-		},
 		RedisCfg: cache.RedisConfig{
 			Host:    env.GetString("REDIS_HOST", "127.0.0.1"),
 			Port:    env.GetString("REDIS_PORT", "6379"),
@@ -59,6 +49,19 @@ func main() {
 		},
 	}
 
+	// Database configuration
+	dbCfg := db.DatabaseConfig{
+		Host:         env.GetString("DB_HOST", "127.0.0.1"),
+		Port:         env.GetString("DB_PORT", "5432"),
+		DBUserName:   env.GetString("DB_USERNAME", "admin"),
+		DBName:       env.GetString("DB_NAME", "geko"),
+		DBPassword:   env.GetString("DB_PASSWORD", ""),
+		DBSchema:     env.GetString("DB_SCHEMA", "public"),
+		MaxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
+		MaxIdleConns: env.GetInt("DB_MAX_IDLE_CONNS", 30),
+		MaxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
+	}
+
 	// Logger
 	logger := zap.Must(zap.NewProduction()).Sugar()
 	defer logger.Sync()
@@ -67,6 +70,7 @@ func main() {
 	ctx := &server.HttpServerContext{
 		Config: cfg,
 		Logger: logger,
+		Store:  *store.NewStorage(dbCfg),
 	}
 
 	// Server

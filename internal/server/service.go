@@ -13,7 +13,7 @@ type Service interface {
 	Mount(*HttpServerContext, *gin.RouterGroup)
 
 	// Attach method where server route will mount
-	Attach()
+	Routes()
 }
 
 // This type will

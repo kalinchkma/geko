@@ -5,10 +5,10 @@ import (
 	"geko/internal/db"
 	"geko/internal/env"
 	"geko/internal/store"
-	authstore "geko/internal/store/auth_store"
 	"log"
 
 	"github.com/joho/godotenv"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -22,7 +22,7 @@ func main() {
 	dbConfig := db.DatabaseConfig{
 		Host:         env.GetString("DB_HOST", "127.0.0.1"),
 		Port:         env.GetString("DB_PORT", "5432"),
-		DBUserName:   env.GetString("DB_USERNAME", "admin"),
+		DBUserName:   env.GetString("DB_USERNAME", "geko"),
 		DBName:       env.GetString("DB_DATABASE", "geko"),
 		DBPassword:   env.GetString("DB_PASSWORD", ""),
 		DBSchema:     env.GetString("DB_SCHEMA", "public"),
@@ -31,13 +31,35 @@ func main() {
 		MaxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
 	}
 
-	database := db.New(dbConfig)
-	storage := store.Storage{
-		UserStore:         *authstore.NewUserStore(database),
-		RoleStore:         *authstore.NewRoleStore(database),
-		RefreshTokenStore: *authstore.NewRefreshTokenStore(database),
+	storage := store.NewStorage(dbConfig)
+	fmt.Println("Start migration process........")
+	migrate(storage.Models(), storage.DB)
+	fmt.Println("Migration done..........")
+}
+
+func migrate(models map[string]interface{}, db *db.Database) {
+	for _, model := range models {
+		modelName, err := getModelName(db.ORM, model)
+		if err != nil {
+			log.Fatalf("error migrating %T: %v", model, err)
+		}
+		fmt.Printf("Migrating %T: %v..........\n", model, modelName)
+
+		db.ORM.AutoMigrate(model)
+
+		fmt.Printf("\nMigration Complete %v\n", modelName)
 	}
-	fmt.Println("Migration start....")
-	storage.Migrate()
-	fmt.Println("Migration done")
+
+}
+
+func getModelName(db *gorm.DB, model interface{}) (string, error) {
+
+	stmt := &gorm.Statement{DB: db}
+
+	if err := stmt.Parse(model); err != nil {
+		return "", fmt.Errorf("error parsing model: %w", err)
+	}
+
+	return stmt.Schema.Table, nil
+
 }

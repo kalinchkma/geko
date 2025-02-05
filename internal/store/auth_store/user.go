@@ -25,17 +25,6 @@ func NewUserStore(db *db.Database) *UserStore {
 	return &UserStore{db}
 }
 
-// Migrate user model
-func (u *UserStore) Migrate() error {
-	// Migrate user model
-	if err := u.db.ORM.Migrator().AutoMigrate(&User{}); err != nil {
-		// Return migration error if any
-		return err
-	}
-	// Return nil for success migration
-	return nil
-}
-
 // Create user
 func (u *UserStore) Create(user User) error {
 	// Store user to database

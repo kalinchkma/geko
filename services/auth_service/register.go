@@ -8,7 +8,7 @@ type RegisterBody struct {
 	Password string `json:"password"`
 }
 
-func (s *AuthService) register(ctx *gin.Context) {
+func (s *AuthService) registerHandler(ctx *gin.Context) {
 	reqisterBody := new(RegisterBody)
 	println(reqisterBody)
 }

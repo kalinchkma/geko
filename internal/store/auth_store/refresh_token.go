@@ -24,14 +24,3 @@ type RefreshTokenStore struct {
 func NewRefreshTokenStore(db *db.Database) *RefreshTokenStore {
 	return &RefreshTokenStore{db}
 }
-
-// Migrate the refresh token
-func (rs *RefreshTokenStore) Migrate() error {
-	// Migrate refresh token model
-	if err := rs.db.ORM.Migrator().AutoMigrate(&RefreshToken{}); err != nil {
-		// Return error if migration failed
-		return err
-	}
-	// Return nil if migration success
-	return nil
-}

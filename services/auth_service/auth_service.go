@@ -17,7 +17,7 @@ func (s *AuthService) Mount(serverContext *server.HttpServerContext, route *gin.
 	s.route = route
 }
 
-// Service route Attach
-func (s *AuthService) Attach() {
-	s.route.GET("/register", s.register)
+// Service routes
+func (s *AuthService) Routes() {
+	s.route.GET("/register", s.registerHandler)
 }

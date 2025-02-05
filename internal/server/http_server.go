@@ -50,7 +50,7 @@ func (server *HttpServer) MountService(mountPath string, handler *gin.Engine, se
 	service.Mount(server.context, group)
 
 	// Register the service
-	service.Attach()
+	service.Routes()
 }
 
 // Mount the server router

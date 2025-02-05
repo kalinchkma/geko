@@ -18,11 +18,11 @@ func (s *OrderService) Mount(serverContext *server.HttpServerContext, route *gin
 	s.route = route
 }
 
-// Service route Attach
-func (s *OrderService) Attach() {
+// Service routes
+func (s *OrderService) Routes() {
 	s.route.GET("/", s.TestOrder)
 }
 
 func (s *OrderService) TestOrder(ctx *gin.Context) {
-	ctx.JSON(http.StatusOK, gin.H{"Order test": s.serverContext.Config.DbCfg})
+	ctx.JSON(http.StatusOK, gin.H{"Order test": s.serverContext.Config})
 }

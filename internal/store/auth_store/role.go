@@ -21,16 +21,6 @@ func NewRoleStore(db *db.Database) *RoleStore {
 	return &RoleStore{db}
 }
 
-// Migrate role model
-func (r *RoleStore) Migrate() error {
-	// Migrate role model
-	if err := r.db.ORM.Migrator().AutoMigrate(&Role{}); err != nil {
-		// Return error if migration failed any
-		return err
-	}
-	return nil
-}
-
 // Create role
 func (r *RoleStore) Create(role Role) error {
 	if res := r.db.ORM.Create(&role); res.Error != nil {
@@ -38,5 +28,3 @@ func (r *RoleStore) Create(role Role) error {
 	}
 	return nil
 }
-
-//
