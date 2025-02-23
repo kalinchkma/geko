@@ -1,4 +1,4 @@
-package authservice
+package authcontroller
 
 import "github.com/gin-gonic/gin"
 
@@ -8,7 +8,7 @@ type RegisterBody struct {
 	Password string `json:"password"`
 }
 
-func (s *AuthService) registerHandler(ctx *gin.Context) {
+func (s *AuthController) Register(ctx *gin.Context) {
 	reqisterBody := new(RegisterBody)
 	println(reqisterBody)
 }
