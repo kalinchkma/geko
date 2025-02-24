@@ -11,7 +11,7 @@ build-http-server:
 
 # Run http server
 run-http-server:
-	@go run cmd/http_server/main.go server
+	@go run cmd/http_server/main.go 
 
 # Run datatabase up migration
 run-migrate-up:

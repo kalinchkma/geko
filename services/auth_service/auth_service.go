@@ -27,11 +27,11 @@ func (s *AuthService) Routes() {
 
 // Route handler
 func (s *AuthService) RouteHandler(c *authcontroller.AuthController) {
-	s.route.GET("/register", (*c).Register)
-	s.route.GET("/login", (*c).Login)
-	s.route.GET("/verify-opt", (*c).VerifyOtp)
-	s.route.GET("/resend-opt", (*c).ResendOtp)
-	s.route.GET("/forgot-password", (*c).ForgotPassword)
-	s.route.GET("/reset-password", (*c).ResetPassword)
-	s.route.GET("/refresh-token", (*c).RefreshToken)
+	s.route.POST("/register", (*c).Register)
+	s.route.POST("/login", (*c).Login)
+	s.route.POST("/verify-opt", (*c).VerifyOtp)
+	s.route.POST("/resend-opt", (*c).ResendOtp)
+	s.route.POST("/forgot-password", (*c).ForgotPassword)
+	s.route.POST("/reset-password", (*c).ResetPassword)
+	s.route.POST("/refresh-token", (*c).RefreshToken)
 }

@@ -1,6 +1,7 @@
 package authstore
 
 import (
+	"fmt"
 	"geko/internal/db"
 
 	"gorm.io/gorm"
@@ -44,6 +45,10 @@ func (u *UserStore) FindByEmail(email string) (User, error) {
 	res := u.db.ORM.Where("email = ?", email).Find(&user)
 	if res.Error != nil {
 		return User{}, res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return User{}, fmt.Errorf("user not found")
 	}
 
 	return user, nil

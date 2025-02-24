@@ -1,7 +1,7 @@
 services:
   psql_bp:
     image: postgres:latest
-    restart: unless-stopped
+    # restart: unless-stopped
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USERNAME}
@@ -15,7 +15,7 @@ services:
 
   redis:
     image: redis:latest
-    restart: unless-stopped
+    # restart: unless-stopped
     container_name: redis
     ports:
       - "${REDIS_PORT}:6379"
@@ -31,8 +31,8 @@ services:
       - "127.0.0.1:8081:8081"
     depends_on:
       - redis
-    restart:
-      unless-stopped
+    # restart:
+    #   unless-stopped
 
 volumes:
   psql_volume_bp:
