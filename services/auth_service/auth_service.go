@@ -25,7 +25,7 @@ func (s *AuthService) Routes() {
 	s.RouteHandler(authController)
 }
 
-// Controller fallback
+// Route handler
 func (s *AuthService) RouteHandler(c *authcontroller.AuthController) {
 	s.route.GET("/register", (*c).Register)
 	s.route.GET("/login", (*c).Login)
