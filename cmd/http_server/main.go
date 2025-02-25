@@ -36,10 +36,7 @@ func main() {
 			DB:      env.GetInt("REDIS_DB", 0),
 			Enabled: env.GetBool("REDIS_ENABLED", false),
 		},
-		Env:       env.GetString("ENV", "development"),
-		MailerCfg: mailers.MailerConfig{
-			// @TODO implement mailer config
-		},
+		Env:     env.GetString("ENV", "development"),
 		AuthCfg: server.AuthConfig{
 			// @TODO implement auth config
 		},
@@ -63,6 +60,17 @@ func main() {
 		MaxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
 	}
 
+	// Mailers config
+	mailerConfig := mailers.MailerConfig{
+		Host:     env.GetString("SMTP_HOST", ""),
+		Port:     env.GetInt("SMTP_PORT", 0),
+		Username: env.GetString("SMTP_USER", ""),
+		Password: env.GetString("SMTP_PASSWORD", ""),
+	}
+
+	// mailer
+	newMailers := mailers.NewMailer(mailerConfig)
+
 	// Logger
 	logger := zap.Must(zap.NewProduction()).Sugar()
 	defer logger.Sync()
@@ -72,6 +80,7 @@ func main() {
 		Config: cfg,
 		Logger: logger,
 		Store:  *store.NewStorage(dbCfg),
+		Mailer: newMailers,
 	}
 
 	// Server
