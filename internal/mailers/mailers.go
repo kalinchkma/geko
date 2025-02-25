@@ -2,6 +2,7 @@ package mailers
 
 import (
 	"crypto/tls"
+	"fmt"
 
 	"gopkg.in/gomail.v2"
 )
@@ -42,6 +43,7 @@ func NewMailer(mailerConfig MailerConfig) *mailer {
 
 // Send email plain text body
 func (m *mailer) Send(to []string, subject, body string) error {
+	fmt.Println("test from email", to)
 	return m.sendEmail(to, subject, body, false, nil)
 }
 
@@ -59,7 +61,7 @@ func (m *mailer) SendHTML(to []string, subject, htmlBody string) error {
 func (m *mailer) sendEmail(to []string, subject, body string, isHTML bool, attachments []string) error {
 	msg := gomail.NewMessage()
 
-	msg.SetHeader("From", "no-replay@gmail.com") // @TODO make dynamic of sender email
+	msg.SetHeader("From", "no-replay@demomailtrap.com") // @TODO make dynamic of sender email
 	msg.SetHeader("To", to...)
 	msg.SetHeader("Subject", subject)
 

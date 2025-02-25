@@ -21,6 +21,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"errors": err.Error(),
 		})
+		return
 	}
 
 	userStore := s.serverContext.Store.UserStore
@@ -41,6 +42,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"errors": err.Error(),
 		})
+		return
 	}
 
 	// Create new user
@@ -58,7 +60,12 @@ func (s *AuthController) Register(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"errors": err.Error(),
 		})
+		return
 	}
+
+	// Send Otp
+	_ = s.serverContext.Mailer.Send([]string{user.Email}, "Confirm email", "Welcome to the geko family please confirm your email")
+
 	ctx.SecureJSON(http.StatusCreated, gin.H{"message": "User registered successfully"})
 
 }

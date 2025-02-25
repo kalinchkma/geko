@@ -1,9 +1,6 @@
 package auth
 
 import (
-	"fmt"
-	"math/rand"
-
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -20,14 +17,4 @@ func HashPassword(passwordString string) (string, error) {
 func ComparePassword(hashedPassword, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
-}
-
-// Generate otp
-func GenerateOTP(length int) string {
-	otp := ""
-	for i := 0; i < length; i++ {
-
-		otp += fmt.Sprintf("%d", rand.Intn(10))
-	}
-	return otp
 }
