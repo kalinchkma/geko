@@ -5,6 +5,7 @@ import (
 	"geko/internal/cache"
 	"geko/internal/db"
 	"geko/internal/env"
+	"geko/internal/mailers"
 	"geko/internal/ratelimiter"
 	"geko/internal/server"
 	"geko/internal/store"
@@ -36,7 +37,7 @@ func main() {
 			Enabled: env.GetBool("REDIS_ENABLED", false),
 		},
 		Env:       env.GetString("ENV", "development"),
-		MailerCfg: server.MailerConfig{
+		MailerCfg: mailers.MailerConfig{
 			// @TODO implement mailer config
 		},
 		AuthCfg: server.AuthConfig{

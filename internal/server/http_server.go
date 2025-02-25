@@ -22,7 +22,7 @@ import (
 type HttpServerContext struct {
 	Config        Config
 	Store         store.Storage
-	Mailer        mailers.Client
+	Mailer        mailers.Mailer
 	CacheStore    cache.Storage
 	Logger        *zap.SugaredLogger
 	Authenticator auth.Authenticator
