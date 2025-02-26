@@ -2,7 +2,6 @@ package mailers
 
 import (
 	"crypto/tls"
-	"fmt"
 
 	"gopkg.in/gomail.v2"
 )
@@ -43,7 +42,6 @@ func NewMailer(mailerConfig MailerConfig) *mailer {
 
 // Send email plain text body
 func (m *mailer) Send(to []string, subject, body string) error {
-	fmt.Println("test from email", to)
 	return m.sendEmail(to, subject, body, false, nil)
 }
 

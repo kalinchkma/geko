@@ -9,6 +9,7 @@ import (
 type Storage struct {
 	DB                *db.Database
 	UserStore         authstore.UserStore
+	OTPStore          authstore.OTPStore
 	RoleStore         authstore.RoleStore
 	RefreshTokenStore authstore.RefreshTokenStore
 }
@@ -19,6 +20,7 @@ func NewStorage(dbCfg db.DatabaseConfig) *Storage {
 	return &Storage{
 		DB:                db,
 		UserStore:         *authstore.NewUserStore(db),
+		OTPStore:          *authstore.NewOTPStore(db),
 		RoleStore:         *authstore.NewRoleStore(db),
 		RefreshTokenStore: *authstore.NewRefreshTokenStore(db),
 	}
@@ -30,5 +32,6 @@ func (s *Storage) Models() map[string]interface{} {
 		"user":          &authstore.User{},
 		"role":          &authstore.Role{},
 		"refresh_token": &authstore.RefreshToken{},
+		"otp":           &authstore.OTP{},
 	}
 }

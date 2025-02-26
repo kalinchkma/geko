@@ -1,9 +1,9 @@
 package authcontroller
 
 import (
-	"geko/internal/auth"
 	authstore "geko/internal/store/auth_store"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,7 +35,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	}
 
 	// Hash password
-	hashedPassword, err := auth.HashPassword(registerBody.Password)
+	hashedPassword, err := userStore.HashPassword(registerBody.Password)
 	// Check error
 	if err != nil {
 		// Return error
@@ -63,9 +63,27 @@ func (s *AuthController) Register(ctx *gin.Context) {
 		return
 	}
 
-	// Send Otp
-	_ = s.serverContext.Mailer.Send([]string{user.Email}, "Confirm email", "Welcome to the geko family please confirm your email")
+	// generate and store otp
+	otpStore := s.serverContext.Store.OTPStore
 
-	ctx.SecureJSON(http.StatusCreated, gin.H{"message": "User registered successfully"})
+	// New otp code
+	newOTPCode := otpStore.GenerateOTP(6)
+
+	// New otp object
+	otp := authstore.OTP{
+		Code:      newOTPCode,
+		UserId:    user.ID,
+		CreatedAt: time.Now(),
+		ExpiresAt: time.Now().Add(1 * time.Minute),
+	}
+
+	// Store to database
+	_ = otpStore.Create(otp)
+
+	// Send Otp
+	_ = s.serverContext.Mailer.Send([]string{user.Email}, "Confirm email", "Welcome to the geko, Your OTP "+newOTPCode)
+
+	// Send
+	ctx.SecureJSON(http.StatusCreated, gin.H{"message": "Register successfully, otp sent to " + user.Email})
 
 }

@@ -14,16 +14,8 @@ run-http-server:
 	@go run cmd/http_server/main.go 
 
 # Run datatabase up migration
-run-migrate-up:
-	@go run bin/main.go migrate:up
-
-# Run database up migration with clean unused
-run-migrate-up-clean:
-	@go run bin.main.go migrate:clean
-
-# Run database down migration
-run-migrate-down:
-	@go run bin/main.go migrate:down
+run-migrate:
+	@go run cmd/migrate/*.go
 
 # Create DB container
 docker-run:
@@ -47,10 +39,7 @@ docker-down:
 test:
 	@echo "Testing..."
 	@go test ./... -v
-# Integrations Tests for the application
-itest:
-	@echo "Running integration tests..."
-	@go test ./app/database -v
+
 
 # Clean the binary
 clean:
