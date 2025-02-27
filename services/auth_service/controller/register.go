@@ -2,6 +2,7 @@ package authcontroller
 
 import (
 	authstore "geko/internal/store/auth_store"
+	authmailer "geko/services/auth_service/mailer"
 	"net/http"
 	"time"
 
@@ -78,11 +79,17 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	}
 
 	// Store to database
-	_ = otpStore.Create(otp)
+	err = otpStore.Create(otp)
 
-	// Send Otp
-	_ = s.serverContext.Mailer.Send([]string{user.Email}, "Confirm email", "Welcome to the geko, Your OTP "+newOTPCode)
+	// Only send the email if otp has been created on database
+	if err == nil {
+		templData := authmailer.OtpEmailTemplateData{
+			Email: user.Email,
+			Otp:   otp.Code,
+		}
 
+		s.mailer.OnboardOTPEmail(templData)
+	}
 	// Send
 	ctx.SecureJSON(http.StatusCreated, gin.H{"message": "Register successfully, otp sent to " + user.Email})
 
