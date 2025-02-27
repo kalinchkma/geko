@@ -5,6 +5,7 @@ import (
 	"geko/internal/mailers"
 )
 
+//go:embed "templates"
 var FS embed.FS
 
 type AuthMailer struct {
