@@ -74,7 +74,6 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	otp := authstore.OTP{
 		Code:      newOTPCode,
 		UserId:    user.ID,
-		CreatedAt: time.Now(),
 		ExpiresAt: time.Now().Add(1 * time.Minute),
 	}
 
@@ -91,7 +90,11 @@ func (s *AuthController) Register(ctx *gin.Context) {
 
 		s.mailer.SendOTPEmail(templData)
 	}
+
 	// Send
-	ctx.SecureJSON(http.StatusCreated, gin.H{"message": "Register successfully, otp sent to " + user.Email})
+	ctx.SecureJSON(http.StatusCreated, gin.H{
+		"message": "Register successfully",
+		"data":    s.serverContext.Store.UserStore.Normalize(user),
+	})
 
 }

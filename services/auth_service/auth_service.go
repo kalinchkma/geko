@@ -27,6 +27,7 @@ func (s *AuthService) Routes() {
 
 // Route handler
 func (s *AuthService) RouteHandler(c *authcontroller.AuthController) {
+
 	s.route.POST("/register", (*c).Register)
 	s.route.POST("/login", (*c).Login)
 	s.route.POST("/verify-opt", (*c).VerifyOtp)

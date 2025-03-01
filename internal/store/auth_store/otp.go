@@ -1,6 +1,7 @@
 package authstore
 
 import (
+	"errors"
 	"fmt"
 	"geko/internal/db"
 	"math/rand"
@@ -15,7 +16,7 @@ type OTP struct {
 	Code      string    `json:"code"`
 	CreatedAt time.Time `json:"created_at"`
 	ExpiresAt time.Time `json:"expires_at" gorm:"not null"`
-	UserId    uint      `json:"user_id"`
+	UserId    uint      `json:"user_id" gorm:"not null;constraint:OnDelete:CASCADE;"`
 }
 
 // Otp store
@@ -65,4 +66,34 @@ func (otpStore *OTPStore) GenerateOTP(length int) string {
 		otp += fmt.Sprintf("%d", rand.Intn(10))
 	}
 	return otp
+}
+
+// Verify otp
+func (otpStore *OTPStore) VerifyOTP(userID uint, inputOTP string) bool {
+	var otp OTP
+
+	// Fetch the latest OTP for the user
+	err := otpStore.db.ORM.Where("user_id = ?", userID).Order("created_at desc").First(&otp).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// Invalid or expired OTP
+			return false
+		}
+		return false
+	}
+
+	// Check if OTP is expired
+	if time.Now().After(otp.ExpiresAt) {
+		return false
+	}
+
+	// Validate OTP
+	if otp.Code != inputOTP {
+		return false
+	}
+
+	// If OTP is valid, delete it after successful verification
+	otpStore.db.ORM.Delete(&otp)
+
+	return true
 }

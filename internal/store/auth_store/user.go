@@ -1,8 +1,10 @@
 package authstore
 
 import (
+	"errors"
 	"fmt"
 	"geko/internal/db"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -16,7 +18,7 @@ type User struct {
 	Password      string
 	EmailVerified bool `json:"email_verified"`
 	AcountStatus  bool `json:"account_status"`
-	OTP           OTP
+	OTP           []OTP
 }
 
 type UserStore struct {
@@ -70,4 +72,65 @@ func (u *UserStore) HashPassword(passwordString string) (string, error) {
 func (u *UserStore) ComparePassword(hashedPassword, password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
 	return err == nil
+}
+
+// Update user account status
+func (u *UserStore) UpdateAccountStatus(userID uint, status bool) (User, error) {
+	var user User
+	// find user by id
+	res := u.db.ORM.Where("ID = ?", userID).First(&user)
+	if res.Error != nil {
+		fmt.Println("User query error", res.Error)
+		return User{}, res.Error
+	}
+
+	// Check if user found
+	if res.RowsAffected == 0 {
+		return User{}, errors.New("user not found")
+	}
+
+	// Update the user status
+	user.AcountStatus = status
+
+	// Save updated user
+	u.db.ORM.Save(&user)
+
+	return user, nil
+}
+
+// Delete user
+func (u *UserStore) DeleteByEmail(email string) error {
+	res := u.db.ORM.Where("email = ?", email).Delete(&email)
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if res.RowsAffected == 0 {
+		return errors.New("no user has been deleted")
+	}
+	return nil
+}
+
+// Normalize user
+func (u *UserStore) Normalize(user User) any {
+
+	return struct {
+		ID            uint
+		CreatedAt     time.Time
+		UpdatedAt     time.Time
+		DeletedAt     time.Time
+		Name          string
+		Email         string
+		EmailVerified bool
+		AcountStatus  bool
+	}{
+		ID:            user.ID,
+		CreatedAt:     user.CreatedAt,
+		UpdatedAt:     user.UpdatedAt,
+		DeletedAt:     user.DeletedAt.Time,
+		Name:          user.Name,
+		Email:         user.Email,
+		EmailVerified: user.EmailVerified,
+		AcountStatus:  user.AcountStatus,
+	}
 }
