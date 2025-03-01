@@ -6,8 +6,9 @@ import (
 )
 
 type OtpEmailTemplateData struct {
-	Email string
-	Otp   string
+	Email   string
+	Otp     string
+	AppName string
 }
 
 func (authMailer *AuthMailer) OnboardOTPEmail(templData OtpEmailTemplateData) {
