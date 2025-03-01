@@ -9,11 +9,14 @@ import (
 var FS embed.FS
 
 type AuthMailer struct {
-	mailer *mailers.Mailer
+	mailer       *mailers.Mailer
+	managerEmail string
 }
 
-func NewAuthMailer(mailer *mailers.Mailer) *AuthMailer {
+func NewAuthMailer(mailer *mailers.Mailer, managerEmail string) *AuthMailer {
+
 	return &AuthMailer{
-		mailer,
+		mailer:       mailer,
+		managerEmail: managerEmail,
 	}
 }

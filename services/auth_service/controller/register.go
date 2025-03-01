@@ -84,8 +84,9 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	// Only send the email if otp has been created on database
 	if err == nil {
 		templData := authmailer.OtpEmailTemplateData{
-			Email: user.Email,
-			Otp:   otp.Code,
+			Email:   user.Email,
+			Otp:     otp.Code,
+			AppName: s.serverContext.Config.AppName,
 		}
 
 		s.mailer.SendOTPEmail(templData)

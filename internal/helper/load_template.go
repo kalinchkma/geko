@@ -7,7 +7,7 @@ import (
 	"html/template"
 )
 
-func LoadHtmlTemplateToString(FS embed.FS, path string, data interface{}) (string, error) {
+func LoadHtmlTemplateToString(FS embed.FS, path string, data any) (string, error) {
 
 	temp, err := template.ParseFS(FS, path)
 	if err != nil {

@@ -11,8 +11,9 @@ type AuthController struct {
 }
 
 func NewAuthController(serverContext *server.HttpServerContext) *AuthController {
+	managerEmail := "test" + "@" + serverContext.Config.MailerConfig.Domain
 	return &AuthController{
 		serverContext: serverContext,
-		mailer:        authmailer.NewAuthMailer(&serverContext.Mailer),
+		mailer:        authmailer.NewAuthMailer(&serverContext.Mailer, managerEmail),
 	}
 }

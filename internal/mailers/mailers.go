@@ -11,12 +11,13 @@ type MailerConfig struct {
 	Port     int
 	Username string
 	Password string
+	Domain   string
 }
 
 type Mailer interface {
-	Send(to []string, subject, body string) error
-	SendWithAttachments(to []string, subject, body string, attachements []string) error
-	SendHTML(to []string, subject, htmlBody string) error
+	Send(from string, to []string, subject, body string) error
+	SendWithAttachments(from string, to []string, subject, body string, attachements []string) error
+	SendHTML(from string, to []string, subject, htmlBody string) error
 }
 
 type mailer struct {
@@ -41,25 +42,25 @@ func NewMailer(mailerConfig MailerConfig) *mailer {
 }
 
 // Send email plain text body
-func (m *mailer) Send(to []string, subject, body string) error {
-	return m.sendEmail(to, subject, body, false, nil)
+func (m *mailer) Send(from string, to []string, subject, body string) error {
+	return m.sendEmail(from, to, subject, body, false, nil)
 }
 
 // Send email with attachments
-func (m *mailer) SendWithAttachments(to []string, subject, body string, attachments []string) error {
-	return m.sendEmail(to, subject, body, false, attachments)
+func (m *mailer) SendWithAttachments(from string, to []string, subject, body string, attachments []string) error {
+	return m.sendEmail(from, to, subject, body, false, attachments)
 }
 
 // Send email with HTML body
-func (m *mailer) SendHTML(to []string, subject, htmlBody string) error {
-	return m.sendEmail(to, subject, htmlBody, true, nil)
+func (m *mailer) SendHTML(from string, to []string, subject, htmlBody string) error {
+	return m.sendEmail(from, to, subject, htmlBody, true, nil)
 }
 
 // Send email helper function
-func (m *mailer) sendEmail(to []string, subject, body string, isHTML bool, attachments []string) error {
+func (m *mailer) sendEmail(from string, to []string, subject, body string, isHTML bool, attachments []string) error {
 	msg := gomail.NewMessage()
 
-	msg.SetHeader("From", "no-replay@demomailtrap.com") // @TODO make dynamic of sender email
+	msg.SetHeader("From", from) // @TODO make dynamic of sender email
 	msg.SetHeader("To", to...)
 	msg.SetHeader("Subject", subject)
 

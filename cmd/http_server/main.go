@@ -26,6 +26,15 @@ func main() {
 		return
 	}
 
+	// Mailers config
+	mailerConfig := mailers.MailerConfig{
+		Host:     env.GetString("SMTP_HOST", ""),
+		Port:     env.GetInt("SMTP_PORT", 0),
+		Username: env.GetString("SMTP_USER", ""),
+		Password: env.GetString("SMTP_PASSWORD", ""),
+		Domain:   env.GetString("EMAIL_DOMAIN", ""),
+	}
+
 	// Server config
 	cfg := server.Config{
 		Addr: fmt.Sprintf(":%v", env.GetString("PORT", "8080")),
@@ -36,8 +45,10 @@ func main() {
 			DB:      env.GetInt("REDIS_DB", 0),
 			Enabled: env.GetBool("REDIS_ENABLED", false),
 		},
-		Env:     env.GetString("ENV", "development"),
-		AuthCfg: server.AuthConfig{
+		Env:          env.GetString("ENV", "development"),
+		AppName:      env.GetString("APP_NAME", ""),
+		MailerConfig: mailerConfig,
+		AuthCfg:      server.AuthConfig{
 			// @TODO implement auth config
 		},
 		RateLimiterCfg: ratelimiter.RateLimiterConfig{
@@ -58,14 +69,6 @@ func main() {
 		MaxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
 		MaxIdleConns: env.GetInt("DB_MAX_IDLE_CONNS", 30),
 		MaxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
-	}
-
-	// Mailers config
-	mailerConfig := mailers.MailerConfig{
-		Host:     env.GetString("SMTP_HOST", ""),
-		Port:     env.GetInt("SMTP_PORT", 0),
-		Username: env.GetString("SMTP_USER", ""),
-		Password: env.GetString("SMTP_PASSWORD", ""),
 	}
 
 	// mailer

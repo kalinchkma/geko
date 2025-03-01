@@ -19,7 +19,7 @@ func (authMailer *AuthMailer) SendWelcomeEmail(templData WelcomeEmailTemplateDat
 	}
 
 	// Send the email to user
-	if err := (*authMailer.mailer).SendHTML([]string{templData.Name}, "Welcome", emailBody); err != nil {
+	if err := (*authMailer.mailer).SendHTML(authMailer.managerEmail, []string{templData.Name}, "Welcome", emailBody); err != nil {
 		fmt.Println(err)
 		return
 	}

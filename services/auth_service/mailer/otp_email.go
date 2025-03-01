@@ -21,7 +21,7 @@ func (authMailer *AuthMailer) SendOTPEmail(templData OtpEmailTemplateData) {
 	}
 
 	// Send the email to user
-	if err := (*authMailer.mailer).SendHTML([]string{templData.Email}, "OTP", emailBody); err != nil {
+	if err := (*authMailer.mailer).SendHTML(authMailer.managerEmail, []string{templData.Email}, "OTP", emailBody); err != nil {
 		// @TODO implement error logging
 		fmt.Println(err)
 	}
