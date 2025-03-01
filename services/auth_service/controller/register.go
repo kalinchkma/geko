@@ -88,7 +88,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 			Otp:   otp.Code,
 		}
 
-		s.mailer.OnboardOTPEmail(templData)
+		s.mailer.SendOTPEmail(templData)
 	}
 	// Send
 	ctx.SecureJSON(http.StatusCreated, gin.H{"message": "Register successfully, otp sent to " + user.Email})

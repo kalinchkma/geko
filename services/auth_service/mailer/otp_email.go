@@ -11,7 +11,7 @@ type OtpEmailTemplateData struct {
 	AppName string
 }
 
-func (authMailer *AuthMailer) OnboardOTPEmail(templData OtpEmailTemplateData) {
+func (authMailer *AuthMailer) SendOTPEmail(templData OtpEmailTemplateData) {
 
 	emailBody, err := helper.LoadHtmlTemplateToString(FS, "templates/onboard.templ", templData)
 	if err != nil {

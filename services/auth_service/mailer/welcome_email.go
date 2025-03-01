@@ -10,7 +10,7 @@ type WelcomeEmailTemplateData struct {
 	AppName string
 }
 
-func (authMailer *AuthMailer) WelcomeEmail(templData WelcomeEmailTemplateData) {
+func (authMailer *AuthMailer) SendWelcomeEmail(templData WelcomeEmailTemplateData) {
 	emailBody, err := helper.LoadHtmlTemplateToString(FS, "templates/welcome.templ", templData)
 	if err != nil {
 		// @TODO implement error logging
