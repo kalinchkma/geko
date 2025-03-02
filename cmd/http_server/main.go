@@ -45,10 +45,13 @@ func main() {
 			DB:      env.GetInt("REDIS_DB", 0),
 			Enabled: env.GetBool("REDIS_ENABLED", false),
 		},
-		Env:          env.GetString("ENV", "development"),
-		AppName:      env.GetString("APP_NAME", ""),
-		MailerConfig: mailerConfig,
-		AuthCfg:      server.AuthConfig{
+		Env:                        env.GetString("ENV", "development"),
+		AppName:                    env.GetString("APP_NAME", ""),
+		OTPValidationTime:          env.GetInt("OTP_VALIDATION_TIME", 3),
+		AccessTokenValidationTime:  env.GetInt("ACCESS_TOKEN_VALIDATION_TIME", 30),
+		RefreshTokenValidationTime: env.GetInt("REFRESH_TOKEN_VALIDATION_TIME", 1440),
+		MailerConfig:               mailerConfig,
+		AuthCfg:                    server.AuthConfig{
 			// @TODO implement auth config
 		},
 		RateLimiterCfg: ratelimiter.RateLimiterConfig{

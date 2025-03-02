@@ -69,7 +69,7 @@ func (otpStore *OTPStore) GenerateOTP(length int) string {
 }
 
 // Verify otp
-func (otpStore *OTPStore) VerifyOTP(userID uint, inputOTP string) bool {
+func (otpStore *OTPStore) VerifyOTP(userID uint, inputOTP string) error {
 	var otp OTP
 
 	// Fetch the latest OTP for the user
@@ -78,29 +78,28 @@ func (otpStore *OTPStore) VerifyOTP(userID uint, inputOTP string) bool {
 		fmt.Println("Otp error", res.Error.Error(), userID, inputOTP)
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			// Invalid or expired OTP
-			return false
+			return errors.New("invalid OTP")
 		}
-		return false
+		return errors.New("invalid OTP")
 	}
 	if res.RowsAffected == 0 {
 		fmt.Println("otp not found", userID, inputOTP)
-		return false
+		return errors.New("invalid OTP")
 	}
 	fmt.Println(otp.Code)
 	// Check if OTP is expired
 	if time.Now().After(otp.ExpiresAt) {
 		fmt.Println("OTP expires")
-		return false
+		return errors.New("OTP expires")
 	}
 
 	// Validate OTP
 	if otp.Code != inputOTP {
 		fmt.Println("Invalid OTP")
-		return false
+		return errors.New("invalid OTP")
 	}
 
 	// If OTP is valid, delete it after successful verification
 	otpStore.db.ORM.Delete(&otp)
-
-	return true
+	return nil
 }

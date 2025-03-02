@@ -84,7 +84,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	otp := authstore.OTP{
 		Code:      newOTPCode,
 		UserId:    user.ID,
-		ExpiresAt: time.Now().Add(5 * time.Minute),
+		ExpiresAt: time.Now().Add(time.Duration(s.serverContext.Config.OTPValidationTime) * time.Minute),
 	}
 
 	// Store to database
@@ -93,9 +93,10 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	// Only send the email if otp has been created on database
 	if err == nil {
 		templData := authmailer.OtpEmailTemplateData{
-			Email:   user.Email,
-			Otp:     otp.Code,
-			AppName: s.serverContext.Config.AppName,
+			Email:      user.Email,
+			Otp:        otp.Code,
+			AppName:    s.serverContext.Config.AppName,
+			Expiration: s.serverContext.Config.OTPValidationTime,
 		}
 
 		s.mailer.SendOTPEmail(templData)
