@@ -7,13 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type VerifyOTPRequestBody struct {
+type VerifyOTPRequestPayload struct {
 	Code   string `json:"code"`
 	UserID uint   `json:"user_id"`
 }
 
 func (a *AuthController) VerifyOtp(ctx *gin.Context) {
-	var verifyOTPBody VerifyOTPRequestBody
+	var verifyOTPBody VerifyOTPRequestPayload
 
 	// Verify request body
 	if err := ctx.ShouldBindJSON(&verifyOTPBody); err != nil {

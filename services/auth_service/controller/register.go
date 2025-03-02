@@ -9,14 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RegisterBody struct {
+type RegisterPayload struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
 func (s *AuthController) Register(ctx *gin.Context) {
-	var registerBody RegisterBody
+	var registerBody RegisterPayload
 
 	if err := ctx.ShouldBindJSON(&registerBody); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
