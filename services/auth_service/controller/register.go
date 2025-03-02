@@ -64,6 +64,16 @@ func (s *AuthController) Register(ctx *gin.Context) {
 		return
 	}
 
+	// Get Update user
+	user, err = userStore.FindByEmail(user.Email)
+	if err != nil {
+		// If created user not found return error
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"errors": err.Error(),
+		})
+		return
+	}
+
 	// generate and store otp
 	otpStore := s.serverContext.Store.OTPStore
 
@@ -74,7 +84,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	otp := authstore.OTP{
 		Code:      newOTPCode,
 		UserId:    user.ID,
-		ExpiresAt: time.Now().Add(1 * time.Minute),
+		ExpiresAt: time.Now().Add(5 * time.Minute),
 	}
 
 	// Store to database

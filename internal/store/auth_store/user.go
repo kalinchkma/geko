@@ -78,14 +78,15 @@ func (u *UserStore) ComparePassword(hashedPassword, password string) bool {
 func (u *UserStore) UpdateAccountStatus(userID uint, status bool) (User, error) {
 	var user User
 	// find user by id
-	res := u.db.ORM.Where("ID = ?", userID).First(&user)
+	res := u.db.ORM.Where("id = ?", userID).Find(&user)
 	if res.Error != nil {
-		fmt.Println("User query error", res.Error)
+		fmt.Println("User query error", res.Error, userID)
 		return User{}, res.Error
 	}
 
 	// Check if user found
 	if res.RowsAffected == 0 {
+		fmt.Println("User not affected")
 		return User{}, errors.New("user not found")
 	}
 
