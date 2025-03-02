@@ -86,7 +86,7 @@ func (otpStore *OTPStore) VerifyOTP(userID uint, inputOTP string) error {
 		fmt.Println("otp not found", userID, inputOTP)
 		return errors.New("invalid OTP")
 	}
-	fmt.Println(otp.Code)
+
 	// Check if OTP is expired
 	if time.Now().After(otp.ExpiresAt) {
 		fmt.Println("OTP expires")

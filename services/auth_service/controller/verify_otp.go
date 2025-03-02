@@ -26,7 +26,7 @@ func (a *AuthController) VerifyOtp(ctx *gin.Context) {
 	// Verify otp
 	if err := a.serverContext.Store.OTPStore.VerifyOTP(verifyOTPBody.UserID, verifyOTPBody.Code); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
-			"errors": err,
+			"errors": err.Error(),
 		})
 		return
 	} else {
