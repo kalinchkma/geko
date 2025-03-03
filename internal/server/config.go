@@ -4,6 +4,7 @@ import (
 	"geko/internal/cache"
 	"geko/internal/mailers"
 	"geko/internal/ratelimiter"
+	"time"
 )
 
 type Config struct {
@@ -20,4 +21,11 @@ type Config struct {
 }
 
 type AuthConfig struct {
+	Token TokenConfig
+}
+
+type TokenConfig struct {
+	Secret string
+	Exp    time.Duration
+	Iss    string
 }

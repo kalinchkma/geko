@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"geko/internal/auth"
 	"geko/internal/cache"
 	"geko/internal/db"
 	"geko/internal/env"
@@ -35,6 +36,15 @@ func main() {
 		Domain:   env.GetString("EMAIL_DOMAIN", ""),
 	}
 
+	// Auth config
+	authConfig := server.AuthConfig{
+		Token: server.TokenConfig{
+			Secret: env.GetString("TOKEN_SECRET", "super_secret"),
+			Exp:    time.Duration(env.GetInt("TOKEN_VALIDITY", 24) * time.Now().Hour()),
+			Iss:    env.GetString("TOKEN_ISS", "GEKO_"),
+		},
+	}
+
 	// Server config
 	cfg := server.Config{
 		Addr: fmt.Sprintf(":%v", env.GetString("PORT", "8080")),
@@ -51,9 +61,7 @@ func main() {
 		AccessTokenValidationTime:  env.GetInt("ACCESS_TOKEN_VALIDATION_TIME", 30),
 		RefreshTokenValidationTime: env.GetInt("REFRESH_TOKEN_VALIDATION_TIME", 1440),
 		MailerConfig:               mailerConfig,
-		AuthCfg:                    server.AuthConfig{
-			// @TODO implement auth config
-		},
+		AuthCfg:                    authConfig,
 		RateLimiterCfg: ratelimiter.RateLimiterConfig{
 			RequestsPerTimeFrame: env.GetInt("RATELIMITER_REQUEST_COUNT", 20),
 			TimeFrame:            time.Second * 5,
@@ -87,6 +95,9 @@ func main() {
 		Logger: logger,
 		Store:  *store.NewStorage(dbCfg),
 		Mailer: newMailers,
+		Authenticator: auth.Authenticator{
+			JWTAuth: *auth.NewJWTAuthenticator(authConfig.Token.Secret, authConfig.Token.Iss, authConfig.Token.Iss),
+		},
 	}
 
 	// Server
