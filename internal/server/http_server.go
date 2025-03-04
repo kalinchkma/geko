@@ -79,7 +79,7 @@ func (server *HttpServer) Start(handler http.Handler) error {
 	srv := &http.Server{
 		Addr:         server.context.Config.Addr,
 		Handler:      handler,
-		WriteTimeout: time.Second * 30,
+		WriteTimeout: time.Second * 60,
 		ReadTimeout:  time.Second * 10,
 		IdleTimeout:  time.Minute,
 	}

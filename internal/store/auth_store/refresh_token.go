@@ -4,7 +4,6 @@ import (
 	"geko/internal/db"
 	"time"
 
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -13,7 +12,7 @@ type RefreshToken struct {
 	Token     string    `json:"token"`
 	ExpiresAt time.Time `json:"expire_at"`
 	RevokeAt  time.Time `json:"revoke_at"`
-	UserID    uuid.UUID `json:"user_id"`
+	UserID    uint      `json:"user_id" gorm:"not null;constraint:OnDelete:CASCADE;"`
 }
 
 type RefreshTokenStore struct {
@@ -24,3 +23,5 @@ type RefreshTokenStore struct {
 func NewRefreshTokenStore(db *db.Database) *RefreshTokenStore {
 	return &RefreshTokenStore{db}
 }
+
+// Create Refresh Token

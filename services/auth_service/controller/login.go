@@ -37,7 +37,7 @@ func (a *AuthController) Login(ctx *gin.Context) {
 		return
 	}
 
-	// Generate auth token
+	// Generate access token
 	claims := jwt.MapClaims{
 		"sub": user.Email,
 		"exp": time.Now().Add(time.Duration(a.serverContext.Config.AccessTokenValidationTime)).Unix(),
@@ -46,7 +46,7 @@ func (a *AuthController) Login(ctx *gin.Context) {
 		"iss": a.serverContext.Config.AuthCfg.Token.Iss,
 		"aud": a.serverContext.Config.AuthCfg.Token.Iss,
 	}
-	token, err := a.serverContext.Authenticator.JWTAuth.GenerateToken(claims)
+	accessToken, err := a.serverContext.Authenticator.JWTAuth.GenerateToken(claims)
 	if err != nil {
 		fmt.Println(err)
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -54,8 +54,11 @@ func (a *AuthController) Login(ctx *gin.Context) {
 		})
 		return
 	}
+
+	// Generate refresh token
+
 	ctx.JSON(http.StatusAccepted, gin.H{
-		"message": "Login success",
-		"toek":    token,
+		"message":      "Login success",
+		"access_token": accessToken,
 	})
 }
