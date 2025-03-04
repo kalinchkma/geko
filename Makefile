@@ -1,11 +1,9 @@
-# Simple Makefile for a Go project
 
 # Build the application
-all: build test
+all: build-http-server test
 
 build-http-server:
 	@echo "Building..."
-	
 	
 	@go build -o main cmd/http_server/main.go
 
@@ -63,4 +61,4 @@ watch:
             fi; \
         fi
 
-.PHONY: all build-http-server run test clean watch docker-run docker-down itest
+.PHONY: all build-http-server run-http-server run-migrate test clean watch docker-run docker-down 
