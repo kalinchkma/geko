@@ -34,7 +34,7 @@ make all
 
 Build the application
 ```bash
-make build
+make build-http-server 
 ```
 
 Run the application
@@ -50,11 +50,6 @@ make docker-run
 Shutdown DB Container
 ```bash
 make docker-down
-```
-
-DB Integrations Test:
-```bash
-make itest
 ```
 
 Live reload the application:
