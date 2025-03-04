@@ -7,7 +7,7 @@ build-http-server:
 	@echo "Building..."
 	
 	
-	@go build -o bin/main cmd/http_server/main.go
+	@go build -o main cmd/http_server/main.go
 
 # Run http server
 run-http-server:
@@ -63,4 +63,4 @@ watch:
             fi; \
         fi
 
-.PHONY: all build run test clean watch docker-run docker-down itest
+.PHONY: all build-http-server run test clean watch docker-run docker-down itest
