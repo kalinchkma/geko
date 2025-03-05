@@ -33,19 +33,45 @@ type HttpServerContext struct {
 // Http server
 type HttpServer struct {
 	context *HttpServerContext
+	handler *gin.Engine
+	server  *http.Server
 }
 
 // Constructor
 func NewHttpServer(context *HttpServerContext) *HttpServer {
+
+	// Configure gin routing mode
+	// Based on environtment
+	if context.Config.Env == "development" {
+		gin.SetMode(gin.DebugMode)
+	} else if context.Config.Env == "testing" {
+		gin.SetMode(gin.TestMode)
+	} else {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	// Root router hander of server
+	handler := gin.Default()
+
+	server := &http.Server{
+		Addr:         context.Config.Addr,
+		Handler:      handler,
+		WriteTimeout: time.Second * 60,
+		ReadTimeout:  time.Second * 10,
+		IdleTimeout:  time.Minute,
+	}
+
 	return &HttpServer{
 		context: context,
+		handler: handler,
+		server:  server,
 	}
 }
 
 // Mount the service
-func (server *HttpServer) MountService(mountPath string, handler *gin.Engine, service Service) {
+func (server *HttpServer) MountService(mountPath string, service Service) {
 	// base route group
-	group := handler.Group(mountPath)
+	group := server.handler.Group(mountPath)
 
 	// Mount the service to current server
 	service.Mount(server.context, group)
@@ -54,37 +80,10 @@ func (server *HttpServer) MountService(mountPath string, handler *gin.Engine, se
 	service.Routes()
 }
 
-// Mount the server router
-func (server *HttpServer) Mount() *gin.Engine {
-	// Configure gin routing mode
-	// Based on environtment
-	if server.context.Config.Env == "development" {
-		gin.SetMode(gin.DebugMode)
-	} else if server.context.Config.Env == "testing" {
-		gin.SetMode(gin.TestMode)
-	} else {
-		gin.SetMode(gin.ReleaseMode)
-	}
-
-	// Root router hander of server
-	hander := gin.Default()
-
-	return hander
-}
-
 // Run the HttpServer
-func (server *HttpServer) Start(handler http.Handler) error {
+func (server *HttpServer) Start() error {
 
-	// Initialize http server base on configuration
-	// You can customize as you want
-	srv := &http.Server{
-		Addr:         server.context.Config.Addr,
-		Handler:      handler,
-		WriteTimeout: time.Second * 60,
-		ReadTimeout:  time.Second * 10,
-		IdleTimeout:  time.Minute,
-	}
-
+	srv := server.server
 	// Error channel to catch shutdown server
 	shutdown := make(chan error)
 
