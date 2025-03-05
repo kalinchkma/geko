@@ -57,8 +57,26 @@ func (a *AuthController) Login(ctx *gin.Context) {
 
 	// Generate refresh token
 
+	claims = jwt.MapClaims{
+		"sub": user.Email,
+		"exp": time.Now().Add(time.Duration(a.serverContext.Config.RefreshTokenValidationTime)).Unix(),
+		"iat": time.Now().Unix(),
+		"nbf": time.Now().Unix(),
+		"iss": a.serverContext.Config.AuthCfg.Token.Iss,
+		"aud": a.serverContext.Config.AuthCfg.Token.Iss,
+	}
+
+	refreshToken, err := a.serverContext.Authenticator.JWTAuth.GenerateToken(claims)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"errors": "Internal server error",
+		})
+	}
+
 	ctx.JSON(http.StatusAccepted, gin.H{
-		"message":      "Login success",
-		"access_token": accessToken,
+		"message":       "Login success",
+		"access_token":  accessToken,
+		"refresh_token": refreshToken,
 	})
 }

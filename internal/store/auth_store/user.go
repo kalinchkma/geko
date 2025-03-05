@@ -56,7 +56,6 @@ func (u *UserStore) FindByEmail(email string) (User, error) {
 	}
 
 	return user, nil
-
 }
 
 // Hash user password
@@ -92,6 +91,9 @@ func (u *UserStore) UpdateAccountStatus(userID uint, status bool) (User, error) 
 
 	// Update the user status
 	user.AcountStatus = status
+
+	// set email verifyed
+	user.EmailVerified = true
 
 	// Save updated user
 	u.db.ORM.Save(&user)

@@ -44,7 +44,7 @@ func (otpStore *OTPStore) Create(otp OTP) error {
 }
 
 // Find OTP by user id
-func (otpStore OTPStore) FindOTPByUserID(userID uint) (OTP, error) {
+func (otpStore *OTPStore) FindOTPByUserID(userID uint) (OTP, error) {
 	var otp OTP
 
 	res := otpStore.db.ORM.Where("user_id = ?", userID).Find(&otp)
@@ -58,6 +58,16 @@ func (otpStore OTPStore) FindOTPByUserID(userID uint) (OTP, error) {
 
 	return otp, nil
 }
+
+// Delete otp by user id
+// func (otpStore *OTPStore) DeleteOTPByUserID(userID uint) (OTP, error) {
+// 	var otp OTP
+// 	res := otpStore.db.ORM.Where("user_id = ?", userID).Delete(&otp)
+// 	if res.Error != nil {
+// 		return OTP{}, res.Error
+// 	}
+// 	return otp, nil
+// }
 
 // Generate otp
 func (otpStore *OTPStore) GenerateOTP(length int) string {

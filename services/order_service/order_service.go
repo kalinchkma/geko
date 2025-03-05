@@ -35,11 +35,11 @@ func (s *OrderService) TestOrder(ctx *gin.Context) {
 // slow request
 func (s *OrderService) LongRequest(ctx *gin.Context) {
 	t := make(chan int, 1)
+	defer close(t)
 	t <- 0
 	wg := sync.WaitGroup{}
 	fmt.Println("Request start processing")
 	for {
-		fmt.Println(".......")
 		wg.Add(1)
 		tr := <-t
 		tr += 1
@@ -55,7 +55,6 @@ func (s *OrderService) LongRequest(ctx *gin.Context) {
 
 	}
 
-	defer close(t)
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "Process done!",
 	})

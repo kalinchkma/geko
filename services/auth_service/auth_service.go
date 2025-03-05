@@ -31,7 +31,7 @@ func (s *AuthService) RouteHandler(c *authcontroller.AuthController) {
 	s.route.POST("/register", (*c).Register)
 	s.route.POST("/login", (*c).Login)
 	s.route.POST("/verify-opt", (*c).VerifyOtp)
-	s.route.POST("/resend-opt", (*c).ResendOtp)
+	s.route.POST("/resend-opt", (*c).ResendOTP)
 	s.route.POST("/forgot-password", (*c).ForgotPassword)
 	s.route.POST("/reset-password", (*c).ResetPassword)
 	s.route.POST("/refresh", (*c).RefreshToken)
