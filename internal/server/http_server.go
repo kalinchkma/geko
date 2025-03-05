@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"errors"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -104,14 +105,14 @@ func (server *HttpServer) Start(handler http.Handler) error {
 		defer cancel()
 
 		// Shutdown log
-		server.context.Logger.Infow("signal", s.String())
+		log.Println("signal", s.String())
 
 		// Catch shutdown log if any
 		shutdown <- srv.Shutdown(Ctx)
 	}()
 
 	// Server started log
-	server.context.Logger.Infow("Server has started", "addr", server.context.Config.Addr, "env", server.context.Config.Env)
+	log.Println("Server has started PORT ", server.context.Config.Addr, " env:", server.context.Config.Env)
 
 	// Serve server
 	err := srv.ListenAndServe()
@@ -129,7 +130,7 @@ func (server *HttpServer) Start(handler http.Handler) error {
 	}
 
 	// Server stopped error
-	server.context.Logger.Infow("Server has stopped", "addr", server.context.Config.Addr, "env", server.context.Config.Env)
+	log.Println("Server has stopped", "addr", server.context.Config.Addr, "env", server.context.Config.Env)
 
 	return nil
 }

@@ -37,8 +37,8 @@ func main() {
 	}
 
 	// Auth config
-	authConfig := server.AuthConfig{
-		Token: server.TokenConfig{
+	authConfig := auth.AuthConfig{
+		Token: auth.TokenConfig{
 			Secret: env.GetString("TOKEN_SECRET", "super_secret"),
 			Exp:    time.Duration(env.GetInt("TOKEN_VALIDITY", 24) * time.Now().Hour()),
 			Iss:    env.GetString("TOKEN_ISS", "GEKO_"),
