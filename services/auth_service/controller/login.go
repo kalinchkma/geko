@@ -56,7 +56,6 @@ func (a *AuthController) Login(ctx *gin.Context) {
 	}
 
 	// Generate refresh token
-
 	claims = jwt.MapClaims{
 		"sub": user.Email,
 		"exp": time.Now().Add(time.Duration(a.serverContext.Config.RefreshTokenValidationTime)).Unix(),

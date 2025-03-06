@@ -44,14 +44,14 @@ func (s *OrderService) LongRequest(ctx *gin.Context) {
 		tr := <-t
 		tr += 1
 		fmt.Println("channel value", tr)
-		if tr == 60 {
-			break
-		}
 		go func() {
 			defer wg.Done()
 			time.Sleep(1 * time.Second)
 			t <- tr
 		}()
+		if tr == 60 {
+			break
+		}
 
 	}
 

@@ -110,6 +110,6 @@ func (otpStore *OTPStore) VerifyOTP(userID uint, inputOTP string) error {
 	}
 
 	// If OTP is valid, delete it after successful verification
-	otpStore.db.ORM.Delete(&otp)
+	otpStore.db.ORM.Unscoped().Delete(&otp)
 	return nil
 }
