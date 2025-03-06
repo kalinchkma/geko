@@ -1,6 +1,7 @@
 package authcontroller
 
 import (
+	"geko/internal/server"
 	authstore "geko/internal/store/auth_store"
 	authmailer "geko/services/auth_service/mailer"
 	"net/http"
@@ -19,9 +20,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	var registerBody RegisterPayload
 
 	if err := ctx.ShouldBindJSON(&registerBody); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"errors": err.Error(),
-		})
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Bad Request", err.Error())
 		return
 	}
 
@@ -29,9 +28,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	// Find the user by email, if already exist
 	// Return error if user already  exist
 	if _, err := userStore.FindByEmail(registerBody.Email); err == nil {
-		ctx.JSON(http.StatusConflict, gin.H{
-			"errors": "User already exists",
-		})
+		server.ErrorJSONResponse(ctx, http.StatusConflict, "User already exists", nil)
 		return
 	}
 
@@ -40,9 +37,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	// Check error
 	if err != nil {
 		// Return error
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"errors": err.Error(),
-		})
+		server.ErrorJSONResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
@@ -58,9 +53,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	// Check error
 	if err != nil {
 		// Return error
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"errors": err.Error(),
-		})
+		server.ErrorJSONResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
@@ -68,9 +61,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	user, err = userStore.FindByEmail(user.Email)
 	if err != nil {
 		// If created user not found return error
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"errors": err.Error(),
-		})
+		server.ErrorJSONResponse(ctx, http.StatusInternalServerError, err.Error(), nil)
 		return
 	}
 
@@ -98,14 +89,11 @@ func (s *AuthController) Register(ctx *gin.Context) {
 			AppName:    s.serverContext.Config.AppName,
 			Expiration: s.serverContext.Config.OTPValidationTime,
 		}
-
-		s.mailer.SendOTPEmail(templData)
+		// Send otp to user email
+		go s.mailer.SendOTPEmail(templData)
 	}
 
 	// Send
-	ctx.SecureJSON(http.StatusCreated, gin.H{
-		"message": "Register successfully",
-		"data":    s.serverContext.Store.UserStore.Normalize(user),
-	})
+	server.SuccessJSONResponse(ctx, http.StatusCreated, "User Register successfully", s.serverContext.Store.UserStore.Normalize(user))
 
 }

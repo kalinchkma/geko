@@ -1,7 +1,7 @@
 package authcontroller
 
 import (
-	"fmt"
+	"geko/internal/server"
 	"net/http"
 	"time"
 
@@ -17,23 +17,26 @@ type LoginRequestPayload struct {
 func (a *AuthController) Login(ctx *gin.Context) {
 	var payload LoginRequestPayload
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"errors": err.Error(),
-		})
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Bad Request", err.Error())
 		return
 	}
 
+	// Find user by email
 	user, err := a.serverContext.Store.UserStore.FindByEmail(payload.Email)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"errors": err.Error(),
-		})
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Invalid user account", nil)
 		return
 	}
+
+	// Check Password
 	if ok := a.serverContext.Store.UserStore.ComparePassword(user.Password, payload.Password); !ok {
-		ctx.JSON(http.StatusUnauthorized, gin.H{
-			"errors": "Unauthorized",
-		})
+		server.ErrorJSONResponse(ctx, http.StatusForbidden, "Invalid user credentials", nil)
+		return
+	}
+
+	// Check user account status
+	if !user.AcountStatus || !user.EmailVerified {
+		server.ErrorJSONResponse(ctx, http.StatusForbidden, "Inactive user account", nil)
 		return
 	}
 
@@ -48,10 +51,7 @@ func (a *AuthController) Login(ctx *gin.Context) {
 	}
 	accessToken, err := a.serverContext.Authenticator.JWTAuth.GenerateToken(claims)
 	if err != nil {
-		fmt.Println(err)
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"errors": "Internal server error",
-		})
+		server.ErrorJSONResponse(ctx, http.StatusInternalServerError, "Internal server error", nil)
 		return
 	}
 
@@ -68,13 +68,11 @@ func (a *AuthController) Login(ctx *gin.Context) {
 	refreshToken, err := a.serverContext.Authenticator.JWTAuth.GenerateToken(claims)
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{
-			"errors": "Internal server error",
-		})
+		server.ErrorJSONResponse(ctx, http.StatusInternalServerError, "Internal server error", nil)
+		return
 	}
 
-	ctx.JSON(http.StatusAccepted, gin.H{
-		"message":       "Login success",
+	server.SuccessJSONResponse(ctx, http.StatusOK, "Login success", gin.H{
 		"access_token":  accessToken,
 		"refresh_token": refreshToken,
 	})

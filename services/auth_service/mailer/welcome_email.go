@@ -2,7 +2,7 @@ package authmailer
 
 import (
 	"fmt"
-	"geko/internal/helper"
+	"geko/internal/utils"
 )
 
 type WelcomeEmailTemplateData struct {
@@ -11,7 +11,7 @@ type WelcomeEmailTemplateData struct {
 }
 
 func (authMailer *AuthMailer) SendWelcomeEmail(templData WelcomeEmailTemplateData) {
-	emailBody, err := helper.LoadHtmlTemplateToString(FS, "templates/welcome.templ", templData)
+	emailBody, err := utils.LoadHtmlTemplateToString(FS, "templates/welcome.templ", templData)
 	if err != nil {
 		// @TODO implement error logging
 		fmt.Println("Template parsing error:", err)

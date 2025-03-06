@@ -1,6 +1,7 @@
 package authcontroller
 
 import (
+	"geko/internal/server"
 	authmailer "geko/services/auth_service/mailer"
 	"net/http"
 
@@ -17,17 +18,13 @@ func (a *AuthController) VerifyOtp(ctx *gin.Context) {
 
 	// Verify request body
 	if err := ctx.ShouldBindJSON(&verifyOTPBody); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"errors": err.Error(),
-		})
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Bad Request", err.Error())
 		return
 	}
 
 	// Verify otp
 	if err := a.serverContext.Store.OTPStore.VerifyOTP(verifyOTPBody.UserID, verifyOTPBody.Code); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"errors": err.Error(),
-		})
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
 	} else {
 		// OTP is valid
@@ -35,9 +32,7 @@ func (a *AuthController) VerifyOtp(ctx *gin.Context) {
 		user, err := a.serverContext.Store.UserStore.UpdateAccountStatus(verifyOTPBody.UserID, true)
 
 		if err != nil {
-			ctx.JSON(http.StatusInternalServerError, gin.H{
-				"errors": "Internal server errors",
-			})
+			server.ErrorJSONResponse(ctx, http.StatusInternalServerError, "Internal server error", nil)
 			return
 		}
 
@@ -46,10 +41,10 @@ func (a *AuthController) VerifyOtp(ctx *gin.Context) {
 			Name:    user.Name,
 			AppName: a.serverContext.Config.AppName,
 		}
-		a.mailer.SendWelcomeEmail(emailData)
-		ctx.JSON(http.StatusOK, gin.H{
-			"success": "Your account activated succussfully",
-		})
+		// Send welcome email
+		go a.mailer.SendWelcomeEmail(emailData)
+
+		server.SuccessJSONResponse(ctx, http.StatusOK, "Your account has been activated successfully", nil)
 	}
 
 }

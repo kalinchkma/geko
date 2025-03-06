@@ -1,6 +1,7 @@
 package authcontroller
 
 import (
+	"geko/internal/server"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,10 +14,9 @@ type ResendOTPPayload struct {
 func (a *AuthController) ResendOTP(ctx *gin.Context) {
 	var payload ResendOTPPayload
 
+	// Validate payload
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"errors": err.Error(),
-		})
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Bad request", err.Error())
 		return
 	}
 
