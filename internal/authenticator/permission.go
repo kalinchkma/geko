@@ -1,4 +1,4 @@
-package auth
+package authenticator
 
 type Permission struct {
 	Owner  [3]rune // rwx base permission of a model for Owner

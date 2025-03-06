@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"geko/internal/auth"
+	"geko/auth"
+	"geko/internal/authenticator"
 	"geko/internal/cache"
 	"geko/internal/db"
 	"geko/internal/env"
@@ -10,7 +11,6 @@ import (
 	"geko/internal/ratelimiter"
 	"geko/internal/server"
 	"geko/internal/store"
-	authservice "geko/services/auth_service"
 	orderservice "geko/services/order_service"
 	"log"
 	"time"
@@ -37,8 +37,8 @@ func main() {
 	}
 
 	// Auth config
-	authConfig := auth.AuthConfig{
-		Token: auth.TokenConfig{
+	authConfig := authenticator.AuthConfig{
+		Token: authenticator.TokenConfig{
 			Secret: env.GetString("TOKEN_SECRET", "super_secret"),
 			Exp:    time.Duration(env.GetInt("TOKEN_VALIDITY", 24) * time.Now().Hour()),
 			Iss:    env.GetString("TOKEN_ISS", "GEKO_"),
@@ -95,15 +95,15 @@ func main() {
 		Logger: logger,
 		Store:  *store.NewStorage(dbCfg),
 		Mailer: newMailers,
-		Authenticator: auth.Authenticator{
-			JWTAuth: *auth.NewJWTAuthenticator(authConfig.Token.Secret, authConfig.Token.Iss, authConfig.Token.Iss),
+		Authenticator: authenticator.Authenticator{
+			JWTAuth: *authenticator.NewJWTAuthenticator(authConfig.Token.Secret, authConfig.Token.Iss, authConfig.Token.Iss),
 		},
 	}
 
 	// Server
 	srv := server.NewHttpServer(ctx)
 
-	srv.MountService("/auth", &authservice.AuthService{})
+	srv.MountService("/auth", &auth.AuthService{})
 	srv.MountService("/order", &orderservice.OrderService{})
 
 	logger.Fatal(srv.Start())

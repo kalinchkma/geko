@@ -1,8 +1,8 @@
 package authcontroller
 
 import (
+	authmailer "geko/auth/mailers"
 	"geko/internal/server"
-	authmailer "geko/services/auth_service/mailer"
 )
 
 type AuthController struct {

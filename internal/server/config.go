@@ -1,7 +1,7 @@
 package server
 
 import (
-	"geko/internal/auth"
+	"geko/internal/authenticator"
 	"geko/internal/cache"
 	"geko/internal/mailers"
 	"geko/internal/ratelimiter"
@@ -15,7 +15,7 @@ type Config struct {
 	AccessTokenValidationTime  int
 	RefreshTokenValidationTime int
 	MailerConfig               mailers.MailerConfig
-	AuthCfg                    auth.AuthConfig
+	AuthCfg                    authenticator.AuthConfig
 	RedisCfg                   cache.RedisConfig
 	RateLimiterCfg             ratelimiter.RateLimiterConfig
 }

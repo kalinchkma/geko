@@ -1,9 +1,10 @@
 package authcontroller
 
 import (
+	authmailer "geko/auth/mailers"
 	"geko/internal/server"
 	authstore "geko/internal/store/auth_store"
-	authmailer "geko/services/auth_service/mailer"
+
 	"net/http"
 	"time"
 

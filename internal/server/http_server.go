@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"geko/internal/auth"
+	"geko/internal/authenticator"
 	"geko/internal/cache"
 	"geko/internal/mailers"
 	"geko/internal/ratelimiter"
@@ -26,7 +26,7 @@ type HttpServerContext struct {
 	Mailer        mailers.Mailer
 	CacheStore    cache.Storage
 	Logger        *zap.SugaredLogger
-	Authenticator auth.Authenticator
+	Authenticator authenticator.Authenticator
 	RateLimiter   ratelimiter.Limiter
 }
 

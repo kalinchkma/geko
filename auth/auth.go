@@ -1,8 +1,8 @@
-package authservice
+package auth
 
 import (
+	authcontroller "geko/auth/controller"
 	"geko/internal/server"
-	authcontroller "geko/services/auth_service/controller"
 
 	"github.com/gin-gonic/gin"
 )
