@@ -4,20 +4,18 @@ import "github.com/gin-gonic/gin"
 
 func SuccessJSONResponse(ctx *gin.Context, code int, message string, data any) {
 	response := gin.H{
-		"status":  "success",
+		"status":  true,
 		"message": message,
 		"data":    data,
-		"error":   nil,
 	}
 	ctx.JSON(code, response)
 }
 
 func ErrorJSONResponse(ctx *gin.Context, code int, message string, data any) {
 	response := gin.H{
-		"status":  "error",
+		"status":  false,
 		"message": message,
-		"data":    nil,
-		"error":   data,
+		"errors":  data,
 	}
 	ctx.JSON(code, response)
 }
