@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"io"
 	"reflect"
-	"strings"
+
+	"github.com/go-playground/validator/v10"
 )
 
 func ValidateJSON[T any](payload io.Reader, binder *T) error {
@@ -90,26 +91,59 @@ func isEmptyValue(v reflect.Value) bool {
 	}
 }
 
-func NormalizeJsonValidationError[T any](err string) {
-	var payload T
-
-	v := reflect.ValueOf(payload)
-	t := reflect.TypeOf(payload)
-
-	if v.Kind() == reflect.Ptr {
-		v = v.Elem()
-		t = t.Elem()
+func NormalizeJsonValidationError(err error, messages map[string]string) map[string]string {
+	errors := make(map[string]string)
+	if validationErrors, ok := err.(validator.ValidationErrors); ok {
+		for _, vErr := range validationErrors {
+			field := vErr.Field() + "." + vErr.Tag()
+			if msg, exists := messages[field]; exists {
+				errors[vErr.Field()] = msg
+			} else {
+				errors[vErr.Field()] = "Invalid value"
+			}
+		}
+	} else {
+		fmt.Println("Not validation errors")
 	}
+	return errors
+}
 
-	for i := range v.NumField() {
-		field := t.Field(i)
-		// value := v.Field(i)
-		validationTags := field.Tag.Get("binding")
-		fmt.Println(validationTags)
-	}
+func NormalizeJsonValidationErrorWithType(err error, messages map[string]string) map[string]string {
+	errors := make(map[string]string)
 
-	errorsList := strings.Split(err, "\n")
-	for _, e := range errorsList {
-		fmt.Println(e)
+	if validationErrors, ok := err.(validator.ValidationErrors); ok {
+		for _, vErr := range validationErrors {
+			fieldKey := vErr.Field() + "." + vErr.Tag()
+
+			// Use custom message if exists, otherwise default to a descriptive message
+			var msg string
+			if customMsg, exists := messages[fieldKey]; exists {
+				msg = customMsg
+			} else {
+				msg = fmt.Sprintf("Invalid value '%v' for field '%s' (expected: %s)", vErr.Value(), vErr.Field(), vErr.Tag())
+			}
+
+			errors[vErr.Field()] = msg
+		}
+	} else {
+
+		switch e := err.(type) {
+		case *json.UnmarshalTypeError:
+			errors[e.Field] = fmt.Sprintf(
+				"field '%s' has an invalid type: expected %s but got %s",
+				e.Field, e.Type.String(), e.Value,
+			)
+		case *json.SyntaxError:
+			errors["message"] = fmt.Sprintf("syntax error at offset %d: %v", e.Offset, err)
+		case *json.InvalidUnmarshalError:
+			errors["message"] = fmt.Sprintf("invalid unmarshal: %v", e)
+		case *json.UnsupportedTypeError:
+			errors["message"] = fmt.Sprintf("unsupported type: %v", e.Type)
+		case *json.MarshalerError:
+			errors["message"] = fmt.Sprintf("error marshaling JSON: %v", e.Err)
+		default:
+			errors["message"] = fmt.Sprintf("unexpected error: %v", err)
+		}
 	}
+	return errors
 }
