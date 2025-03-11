@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"reflect"
+	"strings"
 )
 
 func ValidateJSON[T any](payload io.Reader, binder *T) error {
@@ -86,5 +87,29 @@ func isEmptyValue(v reflect.Value) bool {
 		return v.IsNil()
 	default:
 		return false
+	}
+}
+
+func NormalizeJsonValidationError[T any](err string) {
+	var payload T
+
+	v := reflect.ValueOf(payload)
+	t := reflect.TypeOf(payload)
+
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+		t = t.Elem()
+	}
+
+	for i := range v.NumField() {
+		field := t.Field(i)
+		// value := v.Field(i)
+		validationTags := field.Tag.Get("binding")
+		fmt.Println(validationTags)
+	}
+
+	errorsList := strings.Split(err, "\n")
+	for _, e := range errorsList {
+		fmt.Println(e)
 	}
 }

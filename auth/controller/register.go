@@ -4,6 +4,7 @@ import (
 	authmailer "geko/auth/mailers"
 	"geko/internal/server"
 	authstore "geko/internal/store/auth_store"
+	"geko/internal/validators"
 
 	"net/http"
 	"time"
@@ -12,8 +13,8 @@ import (
 )
 
 type RegisterPayload struct {
-	Name     string `json:"name" binding:"required"`
-	Email    string `json:"email" binding:"required"`
+	Name     string `json:"name" binding:"min=5,max=20"`
+	Email    string `json:"email" binding:"uuid"`
 	Password string `json:"password" binding:"required"`
 }
 
@@ -21,6 +22,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	var registerBody RegisterPayload
 
 	if err := ctx.ShouldBindJSON(&registerBody); err != nil {
+		validators.NormalizeJsonValidationError[RegisterPayload](err.Error())
 		server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Bad Request", err.Error())
 		return
 	}
