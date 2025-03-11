@@ -4,7 +4,6 @@ import (
 	authmailer "geko/auth/mailers"
 	"geko/internal/server"
 	authstore "geko/internal/store/auth_store"
-	"geko/internal/validators"
 
 	"net/http"
 	"time"
@@ -12,27 +11,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type RegisterPayload struct {
-	Name     string `json:"name" binding:"required,min=5,max=20"`
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required,min=8"`
-}
-
-var validationMessages = map[string]string{
-	"Name.required":     "Name is required",
-	"Name.min":          "Name is too short at leat 5 alphabate",
-	"Name.max":          "Name is too long it must less then 20 alphabate",
-	"Email.required":    "Email is required",
-	"Email.email":       "Invalid Email",
-	"Password.required": "Password is required",
-	"Password.min":      "Password must be at least 8 character long",
-}
-
 func (s *AuthController) Register(ctx *gin.Context) {
 	var registerBody RegisterPayload
 
 	if err := ctx.ShouldBindJSON(&registerBody); err != nil {
-		server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Bad Request", validators.NormalizeJsonValidationErrorWithType(err, validationMessages))
+		// server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Bad Request", validators.NormalizeJsonValidationError(err, RegisterValidationMessages))
+		server.ErrorJSONResponseWithFormatter(ctx, http.StatusBadRequest, "Bad request", err, RegisterValidationMessages)
 		return
 	}
 

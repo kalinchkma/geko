@@ -1,6 +1,10 @@
 package server
 
-import "github.com/gin-gonic/gin"
+import (
+	"geko/internal/validators"
+
+	"github.com/gin-gonic/gin"
+)
 
 func SuccessJSONResponse(ctx *gin.Context, code int, message string, data any) {
 	response := gin.H{
@@ -18,4 +22,9 @@ func ErrorJSONResponse(ctx *gin.Context, code int, message string, data any) {
 		"errors":  data,
 	}
 	ctx.JSON(code, response)
+}
+
+func ErrorJSONResponseWithFormatter(ctx *gin.Context, code int, message string, err error, errorMessages map[string]string) {
+	errorList := validators.NormalizeJsonValidationError(err, errorMessages)
+	ErrorJSONResponse(ctx, code, message, errorList)
 }

@@ -9,15 +9,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type LoginRequestPayload struct {
-	Email    string `json:"email" validate:"required,email,max=255"`
-	Password string `json:"password" validate:"required,min=8,max=72"`
-}
-
 func (a *AuthController) Login(ctx *gin.Context) {
-	var payload LoginRequestPayload
+	var payload LoginPayload
 	if err := ctx.ShouldBindJSON(&payload); err != nil {
-		server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Bad Request", err.Error())
+		server.ErrorJSONResponseWithFormatter(ctx, http.StatusBadRequest, "Bad request", err, LoginValidationMessages)
 		return
 	}
 

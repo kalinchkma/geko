@@ -3,34 +3,30 @@ package authcontroller
 import (
 	authmailer "geko/auth/mailers"
 	"geko/internal/server"
+	"geko/internal/validators"
 
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type VerifyOTPRequestPayload struct {
-	Code   string `json:"code"`
-	UserID uint   `json:"user_id"`
-}
-
 func (a *AuthController) VerifyOtp(ctx *gin.Context) {
-	var verifyOTPBody VerifyOTPRequestPayload
+	var verifyOTPBody VerifyOTPPayload
 
 	// Verify request body
 	if err := ctx.ShouldBindJSON(&verifyOTPBody); err != nil {
-		server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Bad Request", err.Error())
+		server.ErrorJSONResponse(ctx, http.StatusBadRequest, "Bad Request", validators.NormalizeJsonValidationError(err, VerifyOTPValidationMessages))
 		return
 	}
 
 	// Verify otp
-	if err := a.serverContext.Store.OTPStore.VerifyOTP(verifyOTPBody.UserID, verifyOTPBody.Code); err != nil {
+	if err := a.serverContext.Store.OTPStore.VerifyOTP(verifyOTPBody.UserId, verifyOTPBody.Code); err != nil {
 		server.ErrorJSONResponse(ctx, http.StatusBadRequest, err.Error(), nil)
 		return
 	} else {
 		// OTP is valid
 		// Active the user
-		user, err := a.serverContext.Store.UserStore.UpdateAccountStatus(verifyOTPBody.UserID, true)
+		user, err := a.serverContext.Store.UserStore.UpdateAccountStatus(verifyOTPBody.UserId, true)
 
 		if err != nil {
 			server.ErrorJSONResponse(ctx, http.StatusInternalServerError, "Internal server error", nil)

@@ -1,8 +1,6 @@
 package server
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,10 +12,4 @@ type Service interface {
 
 	// Attach method where server route will mount
 	RouteHandler()
-}
-
-// This type will
-type HttpService struct {
-	HttpServer *HttpServer
-	Handler    *http.Handler
 }
