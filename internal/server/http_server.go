@@ -77,7 +77,7 @@ func (server *HttpServer) MountService(mountPath string, service Service) {
 	service.Mount(server.context, group)
 
 	// Register the service
-	service.Routes()
+	service.RouteHandler()
 }
 
 // Run the HttpServer

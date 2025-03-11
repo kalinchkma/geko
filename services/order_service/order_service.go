@@ -22,7 +22,7 @@ func (s *OrderService) Mount(serverContext *server.HttpServerContext, route *gin
 }
 
 // Service routes
-func (s *OrderService) Routes() {
+func (s *OrderService) RouteHandler() {
 	s.route.GET("/", s.TestOrder)
 	s.route.GET("/long", s.LongRequest)
 	s.route.GET("/fast", s.FastRequest)

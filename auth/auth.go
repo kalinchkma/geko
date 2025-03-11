@@ -10,30 +10,14 @@ import (
 // Auth service struct
 type AuthService struct {
 	serverContext *server.HttpServerContext
-	route         *gin.RouterGroup
+	router        *gin.RouterGroup
+	controller    *authcontroller.AuthController
 }
 
 // Service constructor
-func (s *AuthService) Mount(serverContext *server.HttpServerContext, route *gin.RouterGroup) {
+func (s *AuthService) Mount(serverContext *server.HttpServerContext, router *gin.RouterGroup) {
+	// Configure service nessasary dependencies
 	s.serverContext = serverContext
-	s.route = route
-}
-
-// Service routes
-func (s *AuthService) Routes() {
-	authController := authcontroller.NewAuthController(s.serverContext)
-	s.RouteHandler(authController)
-}
-
-// Route handler
-func (s *AuthService) RouteHandler(c *authcontroller.AuthController) {
-
-	s.route.POST("/register", (*c).Register)
-	s.route.POST("/login", (*c).Login)
-	s.route.POST("/verify-opt", (*c).VerifyOtp)
-	s.route.POST("/resend-opt", (*c).ResendOTP)
-	s.route.POST("/forgot-password", (*c).ForgotPassword)
-	s.route.POST("/reset-password", (*c).ResetPassword)
-	s.route.POST("/refresh", (*c).RefreshToken)
-	s.route.POST("/revoke", (*c).RefreshToken)
+	s.router = router
+	s.controller = authcontroller.NewAuthController(s.serverContext)
 }
