@@ -4,7 +4,6 @@ import (
 	authmailer "geko/auth/mailers"
 	"geko/internal/server"
 	authstore "geko/internal/store/auth_store"
-
 	"net/http"
 	"time"
 
@@ -70,6 +69,7 @@ func (s *AuthController) Register(ctx *gin.Context) {
 	// New otp object
 	otp := authstore.OTP{
 		Code:      newOTPCode,
+		Email:     user.Email,
 		UserId:    user.ID,
 		ExpiresAt: time.Now().Add(time.Duration(s.serverContext.Config.OTPValidationTime) * time.Minute),
 	}
@@ -91,5 +91,4 @@ func (s *AuthController) Register(ctx *gin.Context) {
 
 	// Send
 	server.SuccessJSONResponse(ctx, http.StatusCreated, "User Register successfully", s.serverContext.Store.UserStore.Normalize(user))
-
 }

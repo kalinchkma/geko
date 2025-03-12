@@ -12,7 +12,7 @@ run-http-server:
 	@go run cmd/http_server/main.go 
 
 # Run datatabase up migration
-run-migrate:
+migrate:
 	@go run cmd/migrate/*.go
 
 # Create DB container
