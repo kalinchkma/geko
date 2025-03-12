@@ -28,13 +28,13 @@ var LoginValidationMessages = map[string]string{
 }
 
 type VerifyOTPPayload struct {
-	Code   string `json:"code" binding:"required"`
-	UserId uint   `json:"user_id" binding:"required"`
+	Code  string `json:"code" binding:"required"`
+	Email string `json:"email" binding:"required"`
 }
 
 var VerifyOTPValidationMessages = map[string]string{
 	"Code.required":  "code is required",
-	"UserId.user_id": "user_id is required",
+	"Email.required": "email is required",
 }
 
 type ResendOTPPayload struct {

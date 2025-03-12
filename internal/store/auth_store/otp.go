@@ -16,6 +16,7 @@ type OTP struct {
 	Code      string    `json:"code"`
 	CreatedAt time.Time `json:"created_at"`
 	ExpiresAt time.Time `json:"expires_at" gorm:"not null"`
+	Email     string    `json:"email" gorm:"not null"`
 	UserId    uint      `json:"user_id" gorm:"not null;constraint:OnDelete:CASCADE;"`
 }
 
@@ -59,16 +60,6 @@ func (otpStore *OTPStore) FindOTPByUserID(userID uint) (OTP, error) {
 	return otp, nil
 }
 
-// Delete otp by user id
-// func (otpStore *OTPStore) DeleteOTPByUserID(userID uint) (OTP, error) {
-// 	var otp OTP
-// 	res := otpStore.db.ORM.Where("user_id = ?", userID).Delete(&otp)
-// 	if res.Error != nil {
-// 		return OTP{}, res.Error
-// 	}
-// 	return otp, nil
-// }
-
 // Generate otp
 func (otpStore *OTPStore) GenerateOTP(length int) string {
 	otp := ""
@@ -79,13 +70,13 @@ func (otpStore *OTPStore) GenerateOTP(length int) string {
 }
 
 // Verify otp
-func (otpStore *OTPStore) VerifyOTP(userID uint, inputOTP string) error {
+func (otpStore *OTPStore) VerifyOTP(email string, inputOTP string) error {
 	var otp OTP
 
 	// Fetch the latest OTP for the user
-	res := otpStore.db.ORM.Where("user_id = ?", userID).Find(&otp)
+	res := otpStore.db.ORM.Where("email = ?", email).Find(&otp)
 	if res.Error != nil {
-		fmt.Println("Otp error", res.Error.Error(), userID, inputOTP)
+		fmt.Println("Otp error", res.Error.Error(), email, inputOTP)
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			// Invalid or expired OTP
 			return errors.New("invalid OTP")
@@ -93,7 +84,7 @@ func (otpStore *OTPStore) VerifyOTP(userID uint, inputOTP string) error {
 		return errors.New("invalid OTP")
 	}
 	if res.RowsAffected == 0 {
-		fmt.Println("otp not found", userID, inputOTP)
+		fmt.Println("otp not found", email, inputOTP)
 		return errors.New("invalid OTP")
 	}
 

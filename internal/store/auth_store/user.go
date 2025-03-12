@@ -74,12 +74,12 @@ func (u *UserStore) ComparePassword(hashedPassword, password string) bool {
 }
 
 // Update user account status
-func (u *UserStore) UpdateAccountStatus(userID uint, status bool) (User, error) {
+func (u *UserStore) UpdateAccountStatus(email string, status bool) (User, error) {
 	var user User
 	// find user by id
-	res := u.db.ORM.Where("id = ?", userID).Find(&user)
+	res := u.db.ORM.Where("email = ?", email).Find(&user)
 	if res.Error != nil {
-		fmt.Println("User query error", res.Error, userID)
+		fmt.Println("User query error", res.Error, email)
 		return User{}, res.Error
 	}
 
@@ -116,7 +116,6 @@ func (u *UserStore) DeleteByEmail(email string) error {
 
 // Normalize user
 func (u *UserStore) Normalize(user User) any {
-
 	return struct {
 		ID            uint
 		CreatedAt     time.Time
