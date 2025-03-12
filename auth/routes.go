@@ -16,10 +16,10 @@ func (s *AuthService) RouteHandler() {
 	router.POST("/login", controller.Login)
 
 	// Verify otp routes
-	router.POST("/verify-opt", controller.VerifyOtp)
+	router.POST("/verify-otp", controller.VerifyOtp)
 
 	// Resend otp routes
-	router.POST("/resend-opt", controller.ResendOTP)
+	router.POST("/resend-otp", controller.ResendOTP)
 
 	// Forgot password routes
 	router.POST("/forgot-password", controller.ForgotPassword)

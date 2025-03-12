@@ -69,6 +69,17 @@ func (otpStore *OTPStore) GenerateOTP(length int) string {
 	return otp
 }
 
+// Regenerate OTP
+func (otpStore *OTPStore) RegenerateOTP(email string, length int) (string, error) {
+	err := otpStore.DeleteOTPsByEmail(email)
+	if err != nil {
+		return "", err
+	}
+
+	otp := otpStore.GenerateOTP(length)
+	return otp, nil
+}
+
 // Verify otp
 func (otpStore *OTPStore) VerifyOTP(email string, inputOTP string) error {
 	var otp OTP
@@ -102,5 +113,25 @@ func (otpStore *OTPStore) VerifyOTP(email string, inputOTP string) error {
 
 	// If OTP is valid, delete it after successful verification
 	otpStore.db.ORM.Unscoped().Delete(&otp)
+	return nil
+}
+
+// Delete otps by email
+func (otpStore *OTPStore) DeleteOTPsByEmail(email string) error {
+	var otps []OTP
+	res := otpStore.db.ORM.Where("email = ?", email).Find(&otps)
+	if res.Error != nil {
+		return res.Error
+	}
+
+	if len(otps) == 0 {
+		return nil
+	}
+
+	res = otpStore.db.ORM.Unscoped().Delete(&otps)
+	if res.Error != nil {
+		return res.Error
+	}
+
 	return nil
 }

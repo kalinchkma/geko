@@ -29,18 +29,20 @@ var LoginValidationMessages = map[string]string{
 
 type VerifyOTPPayload struct {
 	Code  string `json:"code" binding:"required"`
-	Email string `json:"email" binding:"required"`
+	Email string `json:"email" binding:"required,email"`
 }
 
 var VerifyOTPValidationMessages = map[string]string{
 	"Code.required":  "code is required",
 	"Email.required": "email is required",
+	"Email.email":    "Invalid email input",
 }
 
 type ResendOTPPayload struct {
-	UserId uint `json:"user_id" binding:"required"`
+	Email string `json:"email" binding:"required,email"`
 }
 
 var ResendOTPValidationMessages = map[string]string{
-	"UserId.required": "user_id is required",
+	"Email.required": "email is required",
+	"Email.email":    "Invalid email input",
 }
