@@ -46,3 +46,12 @@ var ResendOTPValidationMessages = map[string]string{
 	"Email.required": "email is required",
 	"Email.email":    "Invalid email input",
 }
+
+type ForgotPasswordPayload struct {
+	Email string `json:"email" binding:"required,email"`
+}
+
+var ForgotPasswordMessages = map[string]string{
+	"Email.required": "email is required",
+	"Email.email":    "Invalid email input",
+}
