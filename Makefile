@@ -5,15 +5,15 @@ all: build-http-server test
 build-http-server:
 	@echo "Building..."
 	
-	@go build -o main cmd/http_server/main.go
+	@go build -o main bin/http_server/main.go
 
 # Run http server
 run-http-server:
-	@go run cmd/http_server/main.go 
+	@go run bin/http_server/main.go 
 
 # Run datatabase up migration
 migrate:
-	@go run cmd/migrate/*.go
+	@go run bin/migrate/*.go
 
 # Create DB container
 docker-run:
