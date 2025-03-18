@@ -2,7 +2,7 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/kalinchkma/geko/internal/validators"
+	"github.com/kalinchkma/geko/validators"
 )
 
 func SuccessJSONResponse(ctx *gin.Context, code int, message string, data any) {

@@ -1,8 +1,8 @@
 package store
 
 import (
-	"github.com/kalinchkma/geko/internal/db"
-	authstore "github.com/kalinchkma/geko/internal/store/auth_store"
+	"github.com/kalinchkma/geko/db"
+	authstore "github.com/kalinchkma/geko/store/auth_store"
 )
 
 // Application storage

@@ -1,7 +1,7 @@
 package authstore
 
 import (
-	"github.com/kalinchkma/geko/internal/db"
+	"github.com/kalinchkma/geko/db"
 	"gorm.io/gorm"
 )
 

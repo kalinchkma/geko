@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/kalinchkma/geko/internal/db"
+	"github.com/kalinchkma/geko/db"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

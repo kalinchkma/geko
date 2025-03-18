@@ -1,10 +1,10 @@
 package server
 
 import (
-	"github.com/kalinchkma/geko/internal/authenticator"
-	"github.com/kalinchkma/geko/internal/cache"
-	"github.com/kalinchkma/geko/internal/mailers"
-	"github.com/kalinchkma/geko/internal/ratelimiter"
+	"github.com/kalinchkma/geko/authenticator"
+	"github.com/kalinchkma/geko/cache"
+	"github.com/kalinchkma/geko/mailers"
+	"github.com/kalinchkma/geko/ratelimiter"
 )
 
 type Config struct {

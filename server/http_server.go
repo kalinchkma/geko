@@ -11,11 +11,11 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kalinchkma/geko/internal/authenticator"
-	"github.com/kalinchkma/geko/internal/cache"
-	"github.com/kalinchkma/geko/internal/mailers"
-	"github.com/kalinchkma/geko/internal/ratelimiter"
-	"github.com/kalinchkma/geko/internal/store"
+	"github.com/kalinchkma/geko/authenticator"
+	"github.com/kalinchkma/geko/cache"
+	"github.com/kalinchkma/geko/mailers"
+	"github.com/kalinchkma/geko/ratelimiter"
+	"github.com/kalinchkma/geko/store"
 	"go.uber.org/zap"
 )
 

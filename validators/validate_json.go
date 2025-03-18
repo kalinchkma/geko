@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/kalinchkma/geko/internal/utils"
+	"github.com/kalinchkma/geko/utils"
 )
 
 func NormalizeJsonValidationError(err error, messages map[string]string) map[string]string {
