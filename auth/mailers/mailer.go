@@ -2,7 +2,8 @@ package authmailer
 
 import (
 	"embed"
-	"geko/internal/mailers"
+
+	"github.com/kalinchkma/geko/internal/mailers"
 )
 
 //go:embed "templates"

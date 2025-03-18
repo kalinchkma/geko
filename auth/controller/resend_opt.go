@@ -1,13 +1,13 @@
 package authcontroller
 
 import (
-	authmailer "geko/auth/mailers"
-	"geko/internal/server"
-	authstore "geko/internal/store/auth_store"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	authmailer "github.com/kalinchkma/geko/auth/mailers"
+	"github.com/kalinchkma/geko/internal/server"
+	authstore "github.com/kalinchkma/geko/internal/store/auth_store"
 )
 
 func (a *AuthController) ResendOTP(ctx *gin.Context) {

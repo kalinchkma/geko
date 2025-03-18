@@ -2,12 +2,12 @@ package orderservice
 
 import (
 	"fmt"
-	"geko/internal/server"
 	"net/http"
 	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kalinchkma/geko/internal/server"
 )
 
 type OrderService struct {

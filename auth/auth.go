@@ -1,10 +1,9 @@
 package auth
 
 import (
-	authcontroller "geko/auth/controller"
-	"geko/internal/server"
-
 	"github.com/gin-gonic/gin"
+	authcontroller "github.com/kalinchkma/geko/auth/controller"
+	"github.com/kalinchkma/geko/internal/server"
 )
 
 // Auth service struct

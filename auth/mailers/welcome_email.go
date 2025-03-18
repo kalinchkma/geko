@@ -2,7 +2,8 @@ package authmailer
 
 import (
 	"fmt"
-	"geko/internal/utils"
+
+	"github.com/kalinchkma/geko/internal/utils"
 )
 
 type WelcomeEmailTemplateData struct {

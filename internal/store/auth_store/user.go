@@ -3,9 +3,9 @@ package authstore
 import (
 	"errors"
 	"fmt"
-	"geko/internal/db"
 	"time"
 
+	"github.com/kalinchkma/geko/internal/db"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

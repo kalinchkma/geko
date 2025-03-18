@@ -2,12 +2,13 @@ package main
 
 import (
 	"fmt"
-	"geko/internal/db"
-	"geko/internal/env"
-	"geko/internal/store"
+
 	"log"
 
 	"github.com/joho/godotenv"
+	"github.com/kalinchkma/geko/internal/db"
+	"github.com/kalinchkma/geko/internal/env"
+	"github.com/kalinchkma/geko/internal/store"
 	"gorm.io/gorm"
 )
 

@@ -2,20 +2,21 @@ package main
 
 import (
 	"fmt"
-	"geko/auth"
-	"geko/internal/authenticator"
-	"geko/internal/cache"
-	"geko/internal/db"
-	"geko/internal/env"
-	"geko/internal/mailers"
-	"geko/internal/ratelimiter"
-	"geko/internal/server"
-	"geko/internal/store"
-	orderservice "geko/services/order_service"
+
 	"log"
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/kalinchkma/geko/auth"
+	"github.com/kalinchkma/geko/internal/authenticator"
+	"github.com/kalinchkma/geko/internal/cache"
+	"github.com/kalinchkma/geko/internal/db"
+	"github.com/kalinchkma/geko/internal/env"
+	"github.com/kalinchkma/geko/internal/mailers"
+	"github.com/kalinchkma/geko/internal/ratelimiter"
+	"github.com/kalinchkma/geko/internal/server"
+	"github.com/kalinchkma/geko/internal/store"
+	orderservice "github.com/kalinchkma/geko/services/order_service"
 	"go.uber.org/zap"
 )
 

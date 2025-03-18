@@ -1,4 +1,4 @@
-module geko
+module github.com/kalinchkma/geko
 
 go 1.23.2
 

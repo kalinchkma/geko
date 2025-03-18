@@ -1,12 +1,12 @@
 package authcontroller
 
 import (
-	authmailer "geko/auth/mailers"
-	"geko/internal/server"
-	"geko/internal/validators"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	authmailer "github.com/kalinchkma/geko/auth/mailers"
+	"github.com/kalinchkma/geko/internal/server"
+	"github.com/kalinchkma/geko/internal/validators"
 )
 
 func (a *AuthController) VerifyOtp(ctx *gin.Context) {

@@ -3,10 +3,10 @@ package authstore
 import (
 	"errors"
 	"fmt"
-	"geko/internal/db"
 	"math/rand"
 	"time"
 
+	"github.com/kalinchkma/geko/internal/db"
 	"gorm.io/gorm"
 )
 

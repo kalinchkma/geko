@@ -10,13 +10,12 @@ import (
 	"syscall"
 	"time"
 
-	"geko/internal/authenticator"
-	"geko/internal/cache"
-	"geko/internal/mailers"
-	"geko/internal/ratelimiter"
-	"geko/internal/store"
-
 	"github.com/gin-gonic/gin"
+	"github.com/kalinchkma/geko/internal/authenticator"
+	"github.com/kalinchkma/geko/internal/cache"
+	"github.com/kalinchkma/geko/internal/mailers"
+	"github.com/kalinchkma/geko/internal/ratelimiter"
+	"github.com/kalinchkma/geko/internal/store"
 	"go.uber.org/zap"
 )
 

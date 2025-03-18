@@ -1,9 +1,8 @@
 package server
 
 import (
-	"geko/internal/validators"
-
 	"github.com/gin-gonic/gin"
+	"github.com/kalinchkma/geko/internal/validators"
 )
 
 func SuccessJSONResponse(ctx *gin.Context, code int, message string, data any) {

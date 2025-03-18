@@ -3,9 +3,9 @@ package validators
 import (
 	"encoding/json"
 	"fmt"
-	"geko/internal/utils"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/kalinchkma/geko/internal/utils"
 )
 
 func NormalizeJsonValidationError(err error, messages map[string]string) map[string]string {

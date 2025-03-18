@@ -1,12 +1,12 @@
 package authcontroller
 
 import (
-	"geko/internal/server"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/kalinchkma/geko/internal/server"
 )
 
 func (a *AuthController) Login(ctx *gin.Context) {
