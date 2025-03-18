@@ -1,4 +1,4 @@
-package server
+package geko
 
 import (
 	"github.com/kalinchkma/geko/authenticator"

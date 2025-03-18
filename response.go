@@ -1,4 +1,4 @@
-package server
+package geko
 
 import (
 	"github.com/gin-gonic/gin"
