@@ -28,7 +28,7 @@ func NewStorage(dbCfg db.DatabaseConfig) *Storage {
 
 // Model list
 func (s *Storage) Models() map[string]interface{} {
-	return map[string]interface{}{
+	return map[string]any{
 		"user":          &authstore.User{},
 		"role":          &authstore.Role{},
 		"refresh_token": &authstore.RefreshToken{},
